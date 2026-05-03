@@ -348,18 +348,21 @@ if page == "Home":
     else:
         st.markdown("<h1 style='text-align: center; font-size: 3.5rem; font-weight: 800;'>IG Content <span style='color: #8b5cf6;'>ViralProAI</span></h1>", unsafe_allow_html=True)
         st.markdown("<p style='text-align: center; color: #94a3b8; font-size: 1.2rem;'>Optimize your social media strategy with state-of-the-art computer vision and NLP.</p>", unsafe_allow_html=True)
-        
-        st.markdown("""
-        <div style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; text-align: center;">
-            <h3 style="margin-top: 0; color: #8b5cf6;">🚀 What is ViralProAI?</h3>
-            <p style="font-size: 1.1rem; opacity: 0.9; max-width: 800px; margin: 0 auto;">
-            <b>ViralProAI</b> is a state-of-the-art content intelligence suite designed for the modern creator. 
-            By fusing <b>Deep Learning NLP</b> with real-time <b>Meta Graph API</b> insights, we help you strip away the guesswork of posting. 
-            From predicting your next post's virality score to identifying exactly what your rivals are doing to win, 
-            ViralProAI is your personal data-scientist for social media growth.
-            </p>
-        </div>
-        """, unsafe_allow_html=True)
+    
+    st.write("##")
+    
+    # --- GLOBAL WEBSITE DESCRIPTION ---
+    st.markdown("""
+    <div style="background: rgba(255,255,255,0.05); padding: 30px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.1); margin-top: 20px; text-align: center;">
+        <h3 style="margin-top: 0; color: #8b5cf6;">🚀 What is ViralProAI?</h3>
+        <p style="font-size: 1.1rem; opacity: 0.9; max-width: 800px; margin: 0 auto;">
+        <b>ViralProAI</b> is a state-of-the-art content intelligence suite designed for the modern creator. 
+        By fusing <b>Deep Learning NLP</b> with real-time <b>Meta Graph API</b> insights, we help you strip away the guesswork of posting. 
+        From predicting your next post's virality score to identifying exactly what your rivals are doing to win, 
+        ViralProAI is your personal data-scientist for social media growth.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     st.write("##")
     
