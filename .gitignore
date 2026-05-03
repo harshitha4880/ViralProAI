@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.env
+
+# Secrets (DO NOT REMOVE)
+credentials.json
+token.json
+fb_token.txt
+
+# Data & Models
+*.csv
+*.pkl
+*.json
+!viral_profile.json
+!trending_audio_dataset.csv
+
+# IDE
+.vscode/
+.idea/
