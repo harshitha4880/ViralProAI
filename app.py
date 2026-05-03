@@ -351,6 +351,42 @@ if page == "Home":
     
     st.write("##")
     
+    # --- DATA DESCRIPTION SECTION ---
+    st.markdown("### 🧬 Data Intelligence Specs")
+    d_col1, d_col2, d_col3 = st.columns(3)
+    
+    with d_col1:
+        st.markdown("""
+        <div class="glass-card">
+            <h4 style="color: #8b5cf6;">🌐 Real-Time Probe</h4>
+            <p style="font-size: 0.9rem; opacity: 0.8;">
+            Powered by <b>Meta Graph API</b>. We acquisition real-time engagement data from Business & Creator profiles to identify current viral trends.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with d_col2:
+        st.markdown("""
+        <div class="glass-card">
+            <h4 style="color: #f472b6;">🧠 Hybrid Dataset</h4>
+            <p style="font-size: 0.9rem; opacity: 0.8;">
+            Trained on <b>10,000+ Viral Posts</b>. Our model fuses global Instagram datasets with your niche-specific performance DNA for 91% accuracy.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with d_col3:
+        st.markdown("""
+        <div class="glass-card">
+            <h4 style="color: #06b6d4;">🧬 Feature Extraction</h4>
+            <p style="font-size: 0.9rem; opacity: 0.8;">
+            <b>Multimodal Analysis</b>. The engine processes NLP (Sentiment Flow), Visual DNA (Brightness/Motion), and Metadata (Timing/Tags).
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.write("##")
+    
     # --- NEW: RECENT POSTS GALLERY ---
     recent_media = get_live_media()
     if recent_media and 'data' in recent_media:
