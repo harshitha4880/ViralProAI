@@ -772,9 +772,9 @@ elif page == "Prediction":
             st.markdown(f"""
             <div class="glass-card" style="border-left: 5px solid #8b5cf6; background: rgba(139, 92, 246, 0.1);">
                 <div style="display: flex; gap: 20px; align-items: flex-start;">
-                    <div style="font-size: 3rem;">🤖</div>
+                    <div style="font-size: 3rem;">🐝</div>
                     <div>
-                        <h3 style="margin: 0; color: #8b5cf6;">AI Agent Strategy Session</h3>
+                        <h3 style="margin: 0; color: #8b5cf6;">Lumi AI Strategy Session</h3>
                         <p style="font-style: italic; color: #f8fafc; margin-top: 10px; line-height: 1.6;">
                             "Hey {display_name.split()[0]}! I've just finished analyzing your content DNA. Honestly? 
                             Your <b>{res['mood']}</b> vibe is exactly what's trending in the {u_niche} niche right now. 
@@ -791,12 +791,21 @@ elif page == "Prediction":
             </div>
             """, unsafe_allow_html=True)
             
-            with st.expander("💬 Ask the AI Agent a Question about this post"):
-                user_q = st.text_input("Example: 'How can I make this more viral?'", key="agent_q")
-                if st.button("Ask Agent 🤖"):
-                    with st.spinner("Agent is thinking..."):
+            with st.expander("💬 Ask Lumi AI a Question about this post"):
+                user_q = st.text_input("Example: 'Generate a caption' or 'Why is my score low?'", key="agent_q")
+                if st.button("Ask Lumi 🤖"):
+                    with st.spinner("Lumi is thinking..."):
                         time.sleep(1)
-                        st.write(f"**🤖 Agent:** Great question! For this specific **{res['mood']}** post, I recommend focusing on the first 3 words of your caption. Try starting with a shocking fact or a direct question to the audience. This usually increases 'Save' rates by 15-20%!")
+                        q_lower = user_q.lower()
+                        
+                        if "caption" in q_lower or "generate" in q_lower:
+                            st.write(f"**🤖 Lumi:** I've got you covered! Based on your **{res['mood']}** vibe, my top pick is: *'{res['ai_captions']['The Hook']}'*. It's designed to stop the scroll instantly!")
+                        elif "hashtag" in q_lower or "tags" in q_lower:
+                            st.write(f"**🤖 Lumi:** For this post, I recommend using a mix of 5 niche tags (like #{u_niche}Style) and 3 broad viral tags. This balances reach and target audience!")
+                        elif "score" in q_lower or "low" in q_lower:
+                            st.write(f"**🤖 Lumi:** Your score is {res['virality_score']}% because your **{res['recommendations'][0]['category']}** needs work. Follow my advice in the Action Plan above to hit 90%!")
+                        else:
+                            st.write(f"**🤖 Lumi:** Great question! For this **{res['mood']}** post, my data suggests that focusing on the first 3 seconds of visual motion will increase your 'Retention Rate' by 25%. Try a quick zoom or a transition!")
             
             # Best time notification
             st.warning("🔔 **Pro Tip:** Your audience is most active at 7:00 PM. Schedule your post for then to maximize reach!")
