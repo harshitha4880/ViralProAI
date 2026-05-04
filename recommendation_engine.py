@@ -76,9 +76,24 @@ class RecommendationEngine:
         else:
             recs.append({'category': '⏰ Algo Timing', 'suggestion': "Standard post detected. Best to share this during the 'Lunch Break' window (12:00 PM - 1:30 PM).", 'impact': 'Medium'})
 
+        # 4. CAPTION ENHANCEMENT (The "Pen")
+        caption_text = metadata.get('caption', '').lower()
+        cta_words = ['comment', 'share', 'save', 'link', 'click', 'tell me', 'tag']
+        viral_words = ['secret', 'how to', 'pov', 'finally', 'must watch', 'stop', 'hacks']
+        
+        has_cta = any(word in caption_text for word in cta_words)
+        has_viral_word = any(word in caption_text for word in viral_words)
+        
+        if not has_cta:
+            recs.append({'category': '✍️ Caption Booster', 'suggestion': "Missing a Call-to-Action (CTA)! Explicitly ask your audience to 'Comment' or 'Save' to boost the algorithm.", 'impact': 'High'})
+        elif not has_viral_word:
+            recs.append({'category': '✍️ Caption Booster', 'suggestion': "Add a 'Power Word'! Using terms like 'POV' or 'Secret' increases click-through rates by 22%.", 'impact': 'Medium'})
+        else:
+            recs.append({'category': '✍️ Caption Booster', 'suggestion': "Caption structure is optimized. You've successfully balanced hooks with a clear CTA.", 'impact': 'Stable'})
+
         # Final Strategy Summary
         if virality_score < 50:
-            strategy = f"Strategy: Your content is 'Safe' but lacks 'Spark'. Apply the 3 boosters above to push your score over 75%."
+            strategy = f"Strategy: Your content is 'Safe' but lacks 'Spark'. Apply the 4 boosters above to push your score over 75%."
         else:
             strategy = f"Strategy: You've matched the {style_pref} DNA! Focus on rapid engagement in the first 15 minutes of posting."
 
