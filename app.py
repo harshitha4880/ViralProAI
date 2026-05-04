@@ -28,12 +28,46 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+import google.generativeai as genai
+
 # Cache functions for API calls to avoid rate limiting
 @st.cache_data(ttl=600) # Cache for 10 minutes
 def get_live_profile():
     if os.path.exists('credentials.json'):
         api = InstagramAPIHandler()
         return api.get_profile_info()
+    return None
+
+def call_lumi_llm(user_query, context_data):
+    """Calls Gemini API for a Pro ChatGPT experience."""
+    if os.path.exists('credentials.json'):
+        with open('credentials.json', 'r') as f:
+            creds = json.load(f)
+            api_key = creds.get('gemini_key')
+            
+        if api_key:
+            try:
+                genai.configure(api_key=api_key)
+                model = genai.GenerativeModel('gemini-1.5-flash')
+                
+                system_prompt = f"""
+                You are Lumi AI, a world-class Instagram Viral Strategist.
+                You are helpful, cute (use emojis like 🐝✨), and professional.
+                Current Post Context:
+                - Virality Score: {context_data['score']}%
+                - Mood: {context_data['mood']}
+                - Niche: {context_data['niche']}
+                - Style: {context_data['style']}
+                - Top Tip: {context_data['top_tip']}
+                
+                Always give expert advice that helps the user grow. If they ask for a caption, use the mood to write something viral.
+                Keep responses concise but punchy (under 100 words).
+                """
+                
+                response = model.generate_content(f"{system_prompt}\n\nUser Question: {user_query}")
+                return response.text
+            except Exception as e:
+                return f"⚠️ Lumi Brain Error: {str(e)}"
     return None
 
 @st.cache_data(ttl=1800) # Cache media for 30 minutes
@@ -795,17 +829,31 @@ elif page == "Prediction":
                 user_q = st.text_input("Example: 'Generate a caption' or 'Why is my score low?'", key="agent_q")
                 if st.button("Ask Lumi 🤖"):
                     with st.spinner("Lumi is thinking..."):
-                        time.sleep(1)
-                        q_lower = user_q.lower()
+                        # Prepare Context for LLM
+                        context = {
+                            'score': res['virality_score'],
+                            'mood': res['mood'],
+                            'niche': u_niche,
+                            'style': res['style_pref'],
+                            'top_tip': res['recommendations'][0]['suggestion']
+                        }
                         
-                        if "caption" in q_lower or "generate" in q_lower:
-                            st.write(f"**🤖 Lumi:** I've got you covered! Based on your **{res['mood']}** vibe, my top pick is: *'{res['ai_captions']['The Hook']}'*. It's designed to stop the scroll instantly!")
-                        elif "hashtag" in q_lower or "tags" in q_lower:
-                            st.write(f"**🤖 Lumi:** For this post, I recommend using a mix of 5 niche tags (like #{u_niche}Style) and 3 broad viral tags. This balances reach and target audience!")
-                        elif "score" in q_lower or "low" in q_lower:
-                            st.write(f"**🤖 Lumi:** Your score is {res['virality_score']}% because your **{res['recommendations'][0]['category']}** needs work. Follow my advice in the Action Plan above to hit 90%!")
+                        # Try LLM first
+                        llm_response = call_lumi_llm(user_q, context)
+                        
+                        if llm_response:
+                            st.write(f"**🤖 Lumi:** {llm_response}")
                         else:
-                            st.write(f"**🤖 Lumi:** Great question! For this **{res['mood']}** post, my data suggests that focusing on the first 3 seconds of visual motion will increase your 'Retention Rate' by 25%. Try a quick zoom or a transition!")
+                            # Fallback to Expert Logic
+                            q_lower = user_q.lower()
+                            if "caption" in q_lower or "generate" in q_lower:
+                                st.write(f"**🤖 Lumi:** I've got you covered! Based on your **{res['mood']}** vibe, my top pick is: *'{res['ai_captions']['The Hook']}'*. It's designed to stop the scroll instantly!")
+                            elif "hashtag" in q_lower or "tags" in q_lower:
+                                st.write(f"**🤖 Lumi:** For this post, I recommend using a mix of 5 niche tags (like #{u_niche}Style) and 3 broad viral tags. This balances reach and target audience!")
+                            elif "score" in q_lower or "low" in q_lower:
+                                st.write(f"**🤖 Lumi:** Your score is {res['virality_score']}% because your **{res['recommendations'][0]['category']}** needs work. Follow my advice in the Action Plan above to hit 90%!")
+                            else:
+                                st.write(f"**🤖 Lumi:** Great question! For this **{res['mood']}** post, my data suggests that focusing on the first 3 seconds of visual motion will increase your 'Retention Rate' by 25%. Try a quick zoom or a transition!")
             
             # Best time notification
             st.warning("🔔 **Pro Tip:** Your audience is most active at 7:00 PM. Schedule your post for then to maximize reach!")
@@ -1150,18 +1198,23 @@ elif page == "API":
 
         st.markdown("---")
         st.markdown("### 🛠️ Connection Settings")
-        new_token = st.text_input("Update Access Token", type="password")
-        new_app_id = st.text_input("Update App ID")
-        new_secret = st.text_input("Update App Secret", type="password")
+        new_token = st.text_input("Update Instagram Access Token", type="password")
+        new_app_id = st.text_input("Update Meta App ID")
+        new_secret = st.text_input("Update Meta App Secret", type="password")
+        new_gemini_key = st.text_input("Update Lumi AI (Gemini) Key", type="password", help="Get a free key from makersuite.google.com")
         
         if st.button("💾 Save & Reconnect"):
             if new_token and new_app_id and new_secret:
+                creds = {
+                    "access_token": new_token,
+                    "app_id": new_app_id,
+                    "app_secret": new_secret
+                }
+                if new_gemini_key:
+                    creds["gemini_key"] = new_gemini_key
+                    
                 with open('credentials.json', 'w') as f:
-                    json.dump({
-                        "access_token": new_token,
-                        "app_id": new_app_id,
-                        "app_secret": new_secret
-                    }, f)
+                    json.dump(creds, f)
                 st.success("Credentials saved! Reconnecting...")
                 time.sleep(1)
                 st.rerun()
