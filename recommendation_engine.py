@@ -49,33 +49,38 @@ class RecommendationEngine:
 
     def get_recommendations(self, features, metadata, virality_score, style_pref="Balanced"):
         """
-        Generates conversational, ChatGPT-style insights based on style preference.
+        Generates a 3-point strategy plan (Visual, Text, Timing).
         """
         recs = []
         nlp = metadata['nlp']
         
-        # 1. Style-Specific Checks
-        if style_pref == "Minimalist" and nlp['caption_length'] > 150:
-            recs.append({'category': '🎨 Style Match', 'suggestion': "Since you prefer a Minimalist style, I'd suggest cutting this caption by 50%. Less is more for your aesthetic.", 'impact': 'Medium'})
-        elif style_pref == "Hype Beast" and nlp['hook_strength'] < 7:
-            recs.append({'category': '🎨 Style Match', 'suggestion': "For a Hype Beast vibe, your hook needs more punch! Use more 'Power Words' or emojis in the first line.", 'impact': 'High'})
-        elif style_pref == "Storyteller" and nlp['caption_length'] < 300:
-            recs.append({'category': '🎨 Style Match', 'suggestion': "Storytellers usually thrive on depth. Try expanding this into a 'Micro-Blog' style post to increase Save rates.", 'impact': 'Medium'})
-
-        # 2. General NLP Suggestions
-        if nlp['hook_strength'] < 5:
-            recs.append({'category': '🧠 AI Insight', 'suggestion': "I noticed your hook is a bit weak. ChatGPT-style tip: Try starting with a 'cliffhanger' sentence to keep them reading.", 'impact': 'High'})
-        
-        if nlp['sentiment_flow'] == "Warning (Pos -> Neg)":
-            recs.append({'category': '🎭 Emotional Flow', 'suggestion': "Your caption ends on a negative note. Consider flipping it to end with a positive Call-To-Action (CTA) for better engagement.", 'impact': 'Medium'})
-
-        # 3. Score-based Strategy
-        if virality_score < 40:
-            strategy = f"Based on my analysis for the {style_pref} style, your content is 'Safe' but lacks 'Spark'. To fix this, I recommend boosting the visual contrast and using one of the 'Hook' captions below."
-        elif 40 <= virality_score <= 70:
-            strategy = f"You're on the right track for a {style_pref} creator! This content has high engagement potential. If you post this between 6-8 PM tonight, my data suggests you'll hit peak reach."
+        # 1. VISUAL RECOMMENDATION (The "Eye")
+        if features.get('brightness_score', 120) < 100:
+            recs.append({'category': '👁️ Visual Pulse', 'suggestion': "Lighting is too low for a viral hit. Boost the 'Exposure' or use a 'High-Contrast' filter to stop the scroll.", 'impact': 'High'})
+        elif features.get('face_count', 0) == 0:
+            recs.append({'category': '👁️ Visual Pulse', 'suggestion': "Human connection drives saves! If possible, add a face or hands in the first 3 seconds of the reel.", 'impact': 'Medium'})
         else:
-            strategy = f"Incredible! This content matches the DNA of {style_pref} viral hits perfectly. Don't change a thing—just hit post and engage with every comment in the first 30 minutes."
+            recs.append({'category': '👁️ Visual Pulse', 'suggestion': "Visual DNA looks solid! Maintain this high-clarity aesthetic for brand consistency.", 'impact': 'Stable'})
+
+        # 2. TEXT RECOMMENDATION (The "Brain")
+        if nlp['hook_strength'] < 6:
+            recs.append({'category': '✍️ Hook Mastery', 'suggestion': "Your first sentence is too passive. Start with a 'How To' or a 'Controversial Opinion' to spike retention.", 'impact': 'High'})
+        elif nlp['caption_length'] > 200 and style_pref == "Minimalist":
+            recs.append({'category': '✍️ Hook Mastery', 'suggestion': "Caption is too wordy for a Minimalist vibe. Trim the middle and use more line breaks.", 'impact': 'Medium'})
+        else:
+            recs.append({'category': '✍️ Hook Mastery', 'suggestion': "Caption flow is excellent. Your sentiment matches your viral profile perfectly.", 'impact': 'Stable'})
+
+        # 3. ALGO TIMING (The "Clock")
+        if virality_score > 70:
+            recs.append({'category': '⏰ Algo Timing', 'suggestion': "This is a 'Power Post'! Upload this between 6:00 PM and 8:30 PM for maximum algorithm push.", 'impact': 'Critical'})
+        else:
+            recs.append({'category': '⏰ Algo Timing', 'suggestion': "Standard post detected. Best to share this during the 'Lunch Break' window (12:00 PM - 1:30 PM).", 'impact': 'Medium'})
+
+        # Final Strategy Summary
+        if virality_score < 50:
+            strategy = f"Strategy: Your content is 'Safe' but lacks 'Spark'. Apply the 3 boosters above to push your score over 75%."
+        else:
+            strategy = f"Strategy: You've matched the {style_pref} DNA! Focus on rapid engagement in the first 15 minutes of posting."
 
         return recs, strategy
 

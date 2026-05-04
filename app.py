@@ -403,9 +403,17 @@ if page == "Home":
     st.write("##")
     
     # --- NEW: RECENT POSTS GALLERY ---
+    col_sync1, col_sync2 = st.columns([5, 1])
+    with col_sync1:
+        st.markdown("### 📸 Recent Content Insights")
+    with col_sync2:
+        if st.button("🔄 Sync Reels"):
+            st.cache_data.clear()
+            st.toast("Clearing cache and syncing with Meta...")
+            st.rerun()
+
     recent_media = get_live_media()
     if recent_media and 'data' in recent_media:
-        st.markdown("### 📸 Recent Content Insights")
         cols = st.columns(len(recent_media['data']))
         for i, item in enumerate(recent_media['data']):
             with cols[i]:
@@ -755,6 +763,12 @@ elif page == "Prediction":
             
             # --- NEW: AI AGENT STRATEGY SESSION ---
             st.write("##")
+            
+            # Build recommendations HTML list
+            recs_list_html = ""
+            for r in res['recommendations']:
+                recs_list_html += f"<li><b>{r['category']}</b>: {r['suggestion']}</li>"
+            
             st.markdown(f"""
             <div class="glass-card" style="border-left: 5px solid #8b5cf6; background: rgba(139, 92, 246, 0.1);">
                 <div style="display: flex; gap: 20px; align-items: flex-start;">
@@ -764,11 +778,13 @@ elif page == "Prediction":
                         <p style="font-style: italic; color: #f8fafc; margin-top: 10px; line-height: 1.6;">
                             "Hey {display_name.split()[0]}! I've just finished analyzing your content DNA. Honestly? 
                             Your <b>{res['mood']}</b> vibe is exactly what's trending in the {u_niche} niche right now. 
-                            However, if you want to break into the Top 1%, you need to <b>{res['recommendations'][0]['suggestion'].lower()}</b>. 
-                            My viral prediction is {res['virality_score']}%, but we can push that over 90% if you follow my lead!"
+                            To push your prediction from {res['virality_score']}% to 95%, here is your <b>Viral Action Plan</b>:"
                         </p>
+                        <ul style="color: #cbd5e1; font-size: 1rem; line-height: 1.8; margin-top: 10px;">
+                            {recs_list_html}
+                        </ul>
                         <div style="margin-top: 15px; padding: 10px; background: rgba(0,0,0,0.2); border-radius: 10px; font-size: 0.9rem;">
-                            <b>🎯 Agent's Secret Tip:</b> Always use a 'High-Contrast' thumbnail for this specific type of post to stop the scroll!
+                            <b>🎯 Agent's Secret Tip:</b> Always engage with every comment in the first 15 minutes to trigger the algorithm's 'Engagement Spike'!
                         </div>
                     </div>
                 </div>
