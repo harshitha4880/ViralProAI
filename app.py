@@ -860,7 +860,7 @@ elif page == "Prediction":
 
             # Save Draft
             if st.button("📌 Save as Draft"):
-                db.save_draft(caption, hashtags, post_type, followers, v_score)
+                db.save_draft(caption, hashtags, post_type, followers, res['virality_score'])
                 st.toast("Draft Saved Successfully!")
 
             # PDF Export
