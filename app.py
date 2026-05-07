@@ -265,8 +265,9 @@ REV_NAV_MAP = {v: k for k, v in NAV_MAP.items()}
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.image("viralproai_logo.png", width=120)
-    st.title("ViralProAI")
+    st.image("assets/logo.png", use_container_width=True)
+    st.markdown("<h1 style='text-align: center; color: #8b5cf6; margin-top: -20px;'>ViralProAI</h1>", unsafe_allow_html=True)
+    st.markdown("---")
     
     # --- USER PROFILE SECTION ---
     with st.expander("👤 My Influencer Profile"):
@@ -302,9 +303,6 @@ with st.sidebar:
     
     # --- MULTI-PROFILE COMMAND CENTER ---
     with st.sidebar:
-        st.image("assets/logo.png", use_container_width=True)
-        st.markdown("<h1 style='text-align: center; color: #8b5cf6;'>ViralProAI</h1>", unsafe_allow_html=True)
-        st.markdown("---")
         
         page = st.selectbox("Navigate", ["Home", "Dataset Insights", "Prediction", "Studio", "Spy", "API"])
         active_prof = st.selectbox("Switch Account", ["_.harsheeyzzz._ (Personal)", "ViralPro_Biz (Business)", "+ Add Account"])
