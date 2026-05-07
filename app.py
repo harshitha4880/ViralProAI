@@ -959,7 +959,11 @@ elif page == "Studio":
         
         c1, c2 = st.columns(2)
         u_ptype = c1.selectbox("Post Type", ["Image", "Reel", "Carousel"])
-        u_tone = c2.selectbox("Select Tone", ["Motivational", "Funny", "Aesthetic", "Professional", "Casual"])
+        u_tone = c2.selectbox("Select Tone", [
+            "Motivational", "Funny", "Aesthetic", "Professional", "Casual", 
+            "Sarcastic", "Emotional", "Urgent", "Mysterious", "Informative", 
+            "Provocative", "Direct"
+        ])
         
         u_niche_studio = st.selectbox("Select Niche", ["Fashion", "Tech", "Fitness", "Travel", "Food", "Lifestyle"])
         
