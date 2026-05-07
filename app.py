@@ -1104,7 +1104,7 @@ elif page == "Spy":
     
     st.write("### 🕵️‍♂️ Watchlist Insights")
     
-    for r in st.session_state['watchlist']:
+    for i, r in enumerate(st.session_state['watchlist']):
         f_count = r.get('followers', 0)
         p_count = r.get('posts', 0)
         
@@ -1137,7 +1137,7 @@ elif page == "Spy":
                 st.info(f"🏆 **Top Performing Hook:** \n\"{top_post.get('caption', 'No caption')[:100]}...\"")
             
             st.warning(f"💡 **AI Strategy Breakdown:** {r['strategy']}")
-            if st.button(f"Extract {r['user']} Content DNA 🧬", key=f"dna_{r['user']}"):
+            if st.button(f"Extract {r['user']} Content DNA 🧬", key=f"dna_{r['user']}_{i}"):
                 st.toast("Deep Analysis initiated... DNA sequencing complete!")
 
 # --- API CONNECTIONS PAGE ---
