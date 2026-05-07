@@ -39,7 +39,10 @@ def get_live_profile():
     return None
 
 def call_lumi_llm(user_query, context_data):
-    """Calls Gemini API for a Pro ChatGPT experience."""
+    """Calls Gemini API for a Pro ChatGPT experience with Memory & Persona."""
+    if 'lumi_history' not in st.session_state:
+        st.session_state['lumi_history'] = []
+        
     if os.path.exists('credentials.json'):
         with open('credentials.json', 'r') as f:
             creds = json.load(f)
@@ -50,25 +53,42 @@ def call_lumi_llm(user_query, context_data):
                 genai.configure(api_key=api_key)
                 model = genai.GenerativeModel('gemini-1.5-flash')
                 
-                system_prompt = f"""
-                You are Lumi AI, a world-class Instagram Viral Strategist.
-                You are helpful, cute (use emojis like 🐝✨), and professional.
-                Current Post Context:
-                - Virality Score: {context_data['score']}%
-                - Mood: {context_data['mood']}
-                - Niche: {context_data['niche']}
-                - Style: {context_data['style']}
-                - Top Tip: {context_data['top_tip']}
+                # Build context-rich prompt with memory
+                history_text = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state['lumi_history'][-5:]])
                 
-                Always give expert advice that helps the user grow. If they ask for a caption, use the mood to write something viral.
-                Keep responses concise but punchy (under 100 words).
+                system_prompt = f"""
+                You are LUMI AI, the world's most advanced Instagram Viral Whisperer. 
+                Your personality is Savvy, Creative, and Proactive (like a Gen-Z marketing genius).
+                You understand: Slang (POV, Fit Check, Vibes, Era, etc.), Emotional Sentiment, and Slang.
+                
+                CURRENT CONTEXT:
+                - Virality Score: {context_data.get('score', 'N/A')}%
+                - Mood/Emotion: {context_data.get('mood', 'Neutral')}
+                - Niche: {context_data.get('niche', 'General')}
+                - Rival Insight: {context_data.get('rival_data', 'No rivals yet')}
+                
+                CONVERSATION HISTORY:
+                {history_text}
+                
+                INSTRUCTIONS:
+                1. Speak like a pro strategist who cares about the user's growth.
+                2. Use emojis (🐝✨🥂🚀) but keep it high-value.
+                3. If they say 'hi', don't just say hello—ask about their latest reel or offer a quick viral tip.
+                4. Be concise but deeply insightful.
                 """
                 
                 response = model.generate_content(f"{system_prompt}\n\nUser Question: {user_query}")
                 return response.text
             except Exception as e:
                 return f"⚠️ Lumi Brain Error: {str(e)}"
-    return None
+    
+    # Fallback Expert Logic (if no API key)
+    query_lower = user_query.lower()
+    if "hi" in query_lower or "hello" in query_lower:
+        return f"Hey! 🐝 Ready to dominate the {context_data.get('niche', 'Instagram')} algorithm today? Your latest {context_data.get('mood', 'content')} looks promising—want me to generate a viral hook for it?"
+    if "caption" in query_lower:
+        return "I've got you! ✍️ Based on your mood, try a 'POV' style hook or something provocative to spark comments. Want a specific one?"
+    return f"Great question! For this {context_data.get('mood', 'Neutral')} post, my data suggests focusing on visual energy to boost your reach by 25%. Try a quick zoom or a transition! 🥂🚀"
 
 @st.cache_data(ttl=1800) # Cache media for 30 minutes
 def get_live_media():
@@ -309,7 +329,40 @@ with st.sidebar:
         if active_prof == "+ Add Account":
             st.info("💡 Link a new Instagram account in the 'API Connections' tab.")
         
-        st.markdown("---")
+            st.markdown("---")
+        
+        # --- GLOBAL LUMI CHAT ---
+        st.markdown("### 🐝 Ask Lumi Pro")
+        
+        # Initialize history
+        if 'lumi_history' not in st.session_state:
+            st.session_state['lumi_history'] = []
+            
+        chat_container = st.container(height=300)
+        with chat_container:
+            for message in st.session_state['lumi_history']:
+                with st.chat_message(message["role"], avatar="🐝" if message["role"] == "assistant" else "👤"):
+                    st.markdown(message["content"])
+        
+        if prompt := st.chat_input("Ask Lumi anything..."):
+            with st.chat_message("user", avatar="👤"):
+                st.markdown(prompt)
+            st.session_state['lumi_history'].append({"role": "user", "content": prompt})
+            
+            # Prepare context
+            ctx = {
+                'score': 85, 'mood': '✨ Creative', 'niche': u_niche if 'u_niche' in locals() else 'General',
+                'rival_data': str(st.session_state.get('watchlist', []))[:200]
+            }
+            
+            with st.chat_message("assistant", avatar="🐝"):
+                with st.spinner("Lumi is thinking..."):
+                    response = call_lumi_llm(prompt, ctx)
+                    st.markdown(response)
+            st.session_state['lumi_history'].append({"role": "assistant", "content": response})
+            st.rerun()
+
+    st.markdown("---")
         
         st.markdown("### 📅 Auto-Pilot Scheduler")
         st.write("Next Post: **Today, 7:00 PM**")
