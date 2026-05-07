@@ -964,11 +964,53 @@ elif page == "Studio":
         u_niche_studio = st.selectbox("Select Niche", ["Fashion", "Tech", "Fitness", "Travel", "Food", "Lifestyle"])
         
         if st.button("✨ Generate Viral Content", use_container_width=True):
-            with st.spinner("AI is crafting your viral DNA..."):
-                time.sleep(1.5)
+            with st.spinner("Lumi is crafting your viral DNA..."):
                 # Style Preference from session state
                 style_pref = st.session_state.get('style_pref', 'Balanced')
-                res = cap_gen.generate_caption(keywords, u_niche_studio, u_tone, u_ptype, existing_cap, style_pref=style_pref)
+                
+                # --- PRO LLM GENERATION ---
+                prompt = f"""
+                Write a viral Instagram caption for the following:
+                - Keywords/Topic: {keywords}
+                - Niche: {u_niche_studio}
+                - Tone: {u_tone}
+                - Post Type: {u_ptype}
+                - Style: {style_pref}
+                - Existing Draft to improve: {existing_cap if existing_cap else 'None'}
+                
+                Please structure your response exactly as follows:
+                HOOK: [A scroll-stopping first line]
+                BODY: [Engaging story or value]
+                CTA: [Call to action]
+                HASHTAGS: [Niche optimized tags]
+                """
+                
+                llm_res = call_lumi_llm(prompt, {
+                    'score': 85, 'mood': '✨ Creative', 'niche': u_niche_studio, 'style': style_pref, 'top_tip': 'Focus on high-emotion hooks.'
+                })
+                
+                if llm_res and "⚠️" not in llm_res:
+                    try:
+                        # Parsing logic
+                        hook = llm_res.split('BODY:')[0].replace('HOOK:', '').strip()
+                        body = llm_res.split('BODY:')[-1].split('CTA:')[0].strip()
+                        cta = llm_res.split('CTA:')[-1].split('HASHTAGS:')[0].strip()
+                        hashtags = llm_res.split('HASHTAGS:')[-1].strip()
+                        
+                        res = {
+                            'hook': hook,
+                            'body': body,
+                            'cta': cta,
+                            'hashtags': hashtags,
+                            'full': f"{hook}\n\n{body}\n\n{cta}\n\n{hashtags}"
+                        }
+                    except:
+                        # Fallback parsing
+                        res = {
+                            'hook': "Scroll Stopping Hook", 'body': llm_res, 'cta': "Click the link!", 'hashtags': "#viral", 'full': llm_res
+                        }
+                else:
+                    res = cap_gen.generate_caption(keywords, u_niche_studio, u_tone, u_ptype, existing_cap, style_pref=style_pref)
                 
                 st.session_state['generated_caption'] = res
                 st.success("Caption Generated Successfully!")
