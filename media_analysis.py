@@ -49,17 +49,11 @@ class MediaAnalyzer:
                         emotion = "😐 Serious/Aesthetic"
 
             return {
-                "brightness": round(float(brightness), 1),
-                "face_count": face_count,
-                "clarity": round(float(clarity), 1),
-                "emotion": emotion
-            }
-
-            return {
                 'brightness_score': round(float(brightness), 2),
                 'face_count': int(face_count),
                 'clarity_score': round(float(clarity), 2),
-                'motion_score': 0.0 # Images have no motion
+                'motion_score': 0.0,
+                'emotion': emotion
             }
         except Exception as e:
             print(f"Error analyzing image: {e}")
@@ -77,6 +71,7 @@ class MediaAnalyzer:
             face_counts = []
             prev_frame = None
             motion_scores = []
+            emotion = "Neutral"
 
             while cap.isOpened():
                 ret, frame = cap.read()
@@ -88,10 +83,17 @@ class MediaAnalyzer:
                 # Brightness
                 brightness_list.append(np.mean(frame))
 
-                # Face detection (every 10th frame for speed)
+                # Face detection & Emotion (every 10th frame for speed)
                 if frame_count % 10 == 0:
                     faces = self.face_cascade.detectMultiScale(gray, 1.1, 4)
                     face_counts.append(len(faces))
+                    if len(faces) > 0:
+                        # Simple heuristic for video emotion
+                        mouth_area = gray[int(frame.shape[0]*0.65):frame.shape[0], int(frame.shape[1]*0.2):int(frame.shape[1]*0.8)]
+                        if mouth_area.mean() > 100:
+                            emotion = "😊 Happy/Engaging"
+                        else:
+                            emotion = "😐 Serious/Aesthetic"
 
                 # Motion detection
                 if prev_frame is not None:
@@ -106,8 +108,9 @@ class MediaAnalyzer:
             return {
                 'brightness_score': round(float(np.mean(brightness_list)), 2) if brightness_list else 120,
                 'face_count': int(max(face_counts)) if face_counts else 0,
-                'clarity_score': 100.0, # Placeholder for videos
-                'motion_score': round(float(np.mean(motion_scores)), 2) if motion_scores else 0.5
+                'clarity_score': 100.0,
+                'motion_score': round(float(np.mean(motion_scores)), 2) if motion_scores else 0.5,
+                'emotion': emotion
             }
         except Exception as e:
             print(f"Error analyzing video: {e}")
@@ -120,12 +123,14 @@ class MediaAnalyzer:
         avg_brightness = np.mean([f['brightness_score'] for f in all_features])
         avg_faces = np.mean([f['face_count'] for f in all_features])
         avg_clarity = np.mean([f['clarity_score'] for f in all_features])
+        emotion = all_features[0].get('emotion', 'Neutral')
 
         return {
             'brightness_score': round(float(avg_brightness), 2),
             'face_count': int(round(avg_faces)),
             'clarity_score': round(float(avg_clarity), 2),
             'motion_score': 0.0,
+            'emotion': emotion,
             'image_count': len(image_paths)
         }
 
@@ -134,5 +139,6 @@ class MediaAnalyzer:
             'brightness_score': 120.0,
             'face_count': 0,
             'clarity_score': 50.0,
-            'motion_score': 0.0
+            'motion_score': 0.0,
+            'emotion': 'Neutral'
         }
