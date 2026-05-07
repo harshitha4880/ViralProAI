@@ -633,7 +633,21 @@ elif page == "Prediction":
                 # Style Preference from session state
                 style_pref = st.session_state.get('style_pref', 'Balanced')
                 
-                ai_caps = recommender.generate_ai_captions(mood, post_type, style_pref=style_pref)
+                # --- NEW: PRO AI CAPTION GENERATION ---
+                llm_caps_query = f"Generate 3 viral caption options (labeled 'The Hook', 'The Story', and 'The Minimalist') for a {mood} {post_type} in the {u_niche} niche. Use the {style_pref} style. Ensure they are punchy and optimized for reach."
+                llm_caps = call_lumi_llm(llm_caps_query, {
+                    'score': v_score, 'mood': mood, 'niche': u_niche, 'style': style_pref, 'top_tip': recs[0]['suggestion']
+                })
+                
+                if llm_caps and "⚠️" not in llm_caps:
+                    # Simple heuristic parsing
+                    ai_caps = {
+                        "The Hook": llm_caps.split('The Story')[0].replace('The Hook:', '').strip(),
+                        "The Story": llm_caps.split('The Story')[-1].split('The Minimalist')[0].replace('The Story:', '').strip(),
+                        "The Minimalist": llm_caps.split('The Minimalist')[-1].replace('The Minimalist:', '').strip()
+                    }
+                else:
+                    ai_caps = recommender.generate_ai_captions(mood, post_type, style_pref=style_pref)
 
                 # Results Storage
                 results = {
