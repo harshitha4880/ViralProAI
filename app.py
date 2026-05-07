@@ -302,7 +302,11 @@ with st.sidebar:
     
     # --- MULTI-PROFILE COMMAND CENTER ---
     with st.sidebar:
-        st.markdown("### 🏢 Command Center")
+        st.image("assets/logo.png", use_container_width=True)
+        st.markdown("<h1 style='text-align: center; color: #8b5cf6;'>ViralProAI</h1>", unsafe_allow_html=True)
+        st.markdown("---")
+        
+        page = st.selectbox("Navigate", ["Home", "Dataset Insights", "Prediction", "Studio", "Spy", "API"])
         active_prof = st.selectbox("Switch Account", ["_.harsheeyzzz._ (Personal)", "ViralPro_Biz (Business)", "+ Add Account"])
         if active_prof == "+ Add Account":
             st.info("💡 Link a new Instagram account in the 'API Connections' tab.")
