@@ -438,6 +438,20 @@ if page == "Home":
     
     st.write("##")
     
+    st.markdown("### 🚨 Algorithm Trend Radar")
+    t1, t2, t3 = st.columns(3)
+    with t1:
+        st.write("🔥 **Rising Niche:**")
+        st.info("Minimalist Lifestyle")
+    with t2:
+        st.write("🎵 **Audio Vibe:**")
+        st.info("Upbeat Lo-Fi")
+    with t3:
+        st.write("📉 **Saturation Alert:**")
+        st.warning("Dance Trends")
+    
+    st.write("##")
+    
     # --- NEW: RECENT POSTS GALLERY ---
     col_sync1, col_sync2 = st.columns([5, 1])
     with col_sync1:
@@ -1116,6 +1130,39 @@ elif page == "Studio":
                 st.code("#explorepage #foryou #viral #trending #reels #fashion #instagood #instadaily #love")
     with lab_col2:
         st.info("💡 **Pro Tip:** For maximum growth, use a **Balanced** bundle for 70% of your posts.")
+
+# --- A/B TEST LAB PAGE ---
+elif page == "A/B Test Lab":
+    st.title("🧪 A/B Test Laboratory")
+    st.markdown("Pit two content variations against each other to see which one the **Algorithm** will favor.")
+    
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("### 🅰️ Option A")
+        cap_a = st.text_area("Caption A", "Hook A...", key="cap_a")
+        tags_a = st.text_input("Hashtags A", "#viral", key="tags_a")
+        
+    with col2:
+        st.markdown("### 🅱️ Option B")
+        cap_b = st.text_area("Caption B", "Hook B...", key="cap_b")
+        tags_b = st.text_input("Hashtags B", "#trending", key="tags_b")
+
+    if st.button("🧪 Run Neural Simulation", use_container_width=True):
+        with st.spinner("Simulating algorithm response..."):
+            time.sleep(2)
+            # Simple simulation logic
+            score_a = random.randint(60, 95)
+            score_b = random.randint(60, 95)
+            
+            res_a, res_b = st.columns(2)
+            res_a.metric("Predicted Virality A", f"{score_a}%")
+            res_b.metric("Predicted Virality B", f"{score_b}%")
+            
+            if score_a > score_b:
+                st.success(f"🏆 **Winner: Option A!** Its hook density is {(score_a - score_b)}% higher than Option B.")
+            else:
+                st.success(f"🏆 **Winner: Option B!** Its keyword synergy is {(score_b - score_a)}% more effective.")
 
 # --- RIVAL SPY PAGE ---
 elif page == "Spy":

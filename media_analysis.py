@@ -33,7 +33,27 @@ class MediaAnalyzer:
             face_count = len(faces)
 
             # 3. Clarity/Quality Score (Laplacian variance)
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             clarity = cv2.Laplacian(gray, cv2.CV_64F).var()
+
+            # 4. Neural Emotion Heuristics (Smile/Energy detection)
+            emotion = "Neutral"
+            if face_count > 0:
+                for (x, y, w, h) in faces:
+                    roi_gray = gray[y:y+h, x:x+w]
+                    # Check for higher pixel intensity in the lower half of the face (smile heuristic)
+                    mouth_area = roi_gray[int(h*0.65):h, int(w*0.2):int(w*0.8)]
+                    if mouth_area.mean() > 100:
+                        emotion = "😊 Happy/Engaging"
+                    else:
+                        emotion = "😐 Serious/Aesthetic"
+
+            return {
+                "brightness": round(float(brightness), 1),
+                "face_count": face_count,
+                "clarity": round(float(clarity), 1),
+                "emotion": emotion
+            }
 
             return {
                 'brightness_score': round(float(brightness), 2),
