@@ -1135,6 +1135,20 @@ elif page == "Spy":
                     st.write(f"**Top Engagement:** {top_post.get('like_count', 0):,} likes")
                 
                 st.info(f"🏆 **Top Performing Hook:** \n\"{top_post.get('caption', 'No caption')[:100]}...\"")
+                
+                st.markdown("#### 🖼️ Competitor Content Gallery")
+                # Show top 4 posts in a grid
+                grid_cols = st.columns(4)
+                for idx, media in enumerate(media_list[:4]):
+                    with grid_cols[idx]:
+                        m_url = media.get('media_url')
+                        m_type = media.get('media_type')
+                        if m_url:
+                            if m_type == 'VIDEO':
+                                st.video(m_url)
+                            else:
+                                st.image(m_url, use_container_width=True)
+                        st.caption(f"❤️ {media.get('like_count', 0):,}")
             
             st.warning(f"💡 **AI Strategy Breakdown:** {r['strategy']}")
             if st.button(f"Extract {r['user']} Content DNA 🧬", key=f"dna_{r['user']}_{i}"):
