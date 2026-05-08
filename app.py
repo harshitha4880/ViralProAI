@@ -226,12 +226,26 @@ st.markdown("""
         background: linear-gradient(90deg, #ec4899, #8b5cf6) !important;
     }
 
-    /* Input Field Clarity */
-    .stTextInput input, .stTextArea textarea {
+    /* Input Field Clarity (FIXED) */
+    .stTextInput input, .stTextArea textarea, [data-testid="stSelectbox"] div[data-baseweb="select"] {
         font-weight: 800 !important;
-        background-color: rgba(255,255,255,0.05) !important;
-        border: 1px solid rgba(255,255,255,0.2) !important;
+        background-color: #0f172a !important; /* Deep Navy Background */
+        border: 1px solid rgba(139, 92, 246, 0.3) !important;
         color: #ffffff !important;
+        border-radius: 12px !important;
+    }
+    
+    /* Ensure selectbox options are readable */
+    div[data-baseweb="popover"] ul {
+        background-color: #0f172a !important;
+        color: white !important;
+    }
+    
+    .stTextInput label, .stSelectbox label {
+        color: #94a3b8 !important;
+        font-weight: 800 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
     
     .metric-container {
@@ -379,24 +393,24 @@ with st.sidebar:
     st.markdown("---")
     
     # --- USER PROFILE SECTION ---
-    with st.expander("👤 My Influencer Profile"):
-        live_prof = get_live_profile()
-        prof = db.get_profile()
-        
-        # Priority: Live Data -> DB Data -> Default
-        default_name = "User"
-        if live_prof and 'username' in live_prof:
-            default_name = live_prof['username']
-        elif prof is not None:
-            default_name = prof['username']
+    st.markdown("### 👤 My Influencer Profile")
+    live_prof = get_live_profile()
+    prof = db.get_profile()
+    
+    # Priority: Live Data -> DB Data -> Default
+    default_name = "User"
+    if live_prof and 'username' in live_prof:
+        default_name = live_prof['username']
+    elif prof is not None:
+        default_name = prof['username']
 
-        u_name = st.text_input("Username", value=default_name)
-        u_niche = st.selectbox("My Niche", ["Fashion", "Tech", "Fitness", "Travel", "Food"], index=0)
-        u_style = st.selectbox("Viral Style Preference", ["Balanced", "Hype Beast", "Minimalist", "Storyteller", "Educational"], index=0)
-        if st.button("💾 Save Profile"):
-            db.update_profile(u_name, u_niche)
-            st.session_state['style_pref'] = u_style
-            st.success("Profile & Style Updated!")
+    u_name = st.text_input("Username", value=default_name)
+    u_niche = st.selectbox("My Niche", ["Fashion", "Tech", "Fitness", "Travel", "Food"], index=0)
+    u_style = st.selectbox("Viral Style Preference", ["Balanced", "Hype Beast", "Minimalist", "Storyteller", "Educational"], index=0)
+    if st.button("💾 Save Profile"):
+        db.update_profile(u_name, u_niche)
+        st.session_state['style_pref'] = u_style
+        st.success("Profile & Style Updated!")
     
     st.markdown("---")
     
