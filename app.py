@@ -121,16 +121,20 @@ track_growth()
 # --- CUSTOM CSS ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
 
-    * { font-family: 'Inter', sans-serif; }
+    /* GLOBAL BOLDING & BRIGHTNESS */
+    * { 
+        font-family: 'Outfit', sans-serif !important; 
+        font-weight: 700 !important; /* ULTRA BOLD */
+        color: #ffffff !important;   /* PURE WHITE CONTRAST */
+    }
 
     /* Main Background with Liquid Shift */
     .stApp {
-        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #1e1b4b);
+        background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #020617);
         background-size: 400% 400%;
         animation: gradientShift 15s ease infinite;
-        color: #f8fafc;
     }
 
     @keyframes gradientShift {
@@ -141,21 +145,54 @@ st.markdown("""
 
     /* Glassmorphism Cards with Glow */
     .glass-card {
-        background: rgba(255, 255, 255, 0.03);
-        backdrop-filter: blur(12px);
+        background: rgba(255, 255, 255, 0.07);
+        backdrop-filter: blur(20px);
         border-radius: 24px;
-        padding: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        margin-bottom: 20px;
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        margin-bottom: 25px;
+        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
+    
     .glass-card:hover {
         transform: translateY(-8px) scale(1.02);
         border: 1px solid rgba(139, 92, 246, 0.5);
         box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
     }
 
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: 900 !important;
+        letter-spacing: -1px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    /* Metrics High Visibility */
+    [data-testid="stMetricValue"] {
+        font-weight: 900 !important;
+        font-size: 2.8rem !important;
+        color: #ffffff !important;
+        text-shadow: 0px 0px 15px rgba(255,255,255,0.4);
+    }
+    
+    [data-testid="stMetricLabel"] {
+        font-weight: 800 !important;
+        color: #94a3b8 !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Table & Sidebar Boldness */
+    .stTable td, .stTable th {
+        font-size: 1.2rem !important;
+        border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    }
+    
+    .stMarkdown p, .stMarkdown li {
+        font-size: 1.1rem !important;
+        line-height: 1.7;
+    }
+    
     /* Custom Button Glow */
     div.stButton > button {
         background: linear-gradient(90deg, #8b5cf6, #ec4899) !important;
@@ -163,7 +200,7 @@ st.markdown("""
         border-radius: 12px !important;
         border: none !important;
         padding: 10px 25px !important;
-        font-weight: 600 !important;
+        font-weight: 800 !important;
         transition: all 0.3s ease !important;
         box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
     }
@@ -173,7 +210,14 @@ st.markdown("""
         background: linear-gradient(90deg, #ec4899, #8b5cf6) !important;
     }
 
-    /* Metric Cards */
+    /* Input Field Clarity */
+    .stTextInput input, .stTextArea textarea {
+        font-weight: 800 !important;
+        background-color: rgba(255,255,255,0.05) !important;
+        border: 1px solid rgba(255,255,255,0.2) !important;
+        color: #ffffff !important;
+    }
+    
     .metric-container {
         display: flex;
         justify-content: space-between;
@@ -189,17 +233,19 @@ st.markdown("""
     }
     .metric-value {
         font-size: 2rem;
-        font-weight: 800;
+        font-weight: 900;
         background: linear-gradient(to right, #a78bfa, #f472b6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
     .metric-label {
-        color: #94a3b8;
-        font-size: 0.85rem;
+        color: #ffffff;
+        font-size: 0.95rem;
+        font-weight: 800;
         text-transform: uppercase;
-        letter-spacing: 1px;
     }
+    </style>
+""", unsafe_allow_html=True)
 
     /* Virality Score Badge */
     .virality-score-big {
