@@ -697,6 +697,21 @@ elif page == "Prediction":
         
         if st.button("🔥 Run AI Prediction", use_container_width=True):
             with st.spinner("Extracting features and predicting..."):
+                # --- NEW: DATASET DNA EXTRACTION ---
+                dna_context = "No historical data yet."
+                if os.path.exists('final_dataset.csv'):
+                    try:
+                        df_dna = pd.read_csv('final_dataset.csv')
+                        niche_avg = df_dna[df_dna['niche'] == u_niche] if 'u_niche' in locals() else df_dna
+                        dna_context = f"""
+                        HISTORICAL DATA (Niche: {u_niche}):
+                        - Avg Virality: {niche_avg['virality_score'].mean():.1f}%
+                        - Top Post Type: {niche_avg['post_type'].mode()[0]}
+                        - Ideal Hashtags: {int(niche_avg['hashtag_count'].mean())}
+                        - Avg Hook Sentiment: {niche_avg['sentiment'].mean():.2f}
+                        """
+                    except: pass
+
                 # Process Media
                 media_path = None
                 if uploaded_file:
@@ -738,9 +753,16 @@ elif page == "Prediction":
                 style_pref = st.session_state.get('style_pref', 'Balanced')
                 
                 # --- NEW: PRO AI CAPTION GENERATION ---
-                llm_caps_query = f"TASK: Generate 3 viral caption options. DO NOT be conversational. DO NOT ask questions. OUTPUT ONLY THE CAPTIONS. Labels: 'The Hook', 'The Story', 'The Minimalist'. DETAILS: {mood} {post_type} in the {u_niche} niche, {style_pref} style. Ensure they are punchy and optimized for reach."
+                llm_caps_query = f"""
+                TASK: Generate 3 viral caption options. 
+                DATASET DNA: {dna_context}
+                
+                DO NOT be conversational. DO NOT ask questions. 
+                OUTPUT ONLY THE CAPTIONS. Labels: 'The Hook', 'The Story', 'The Minimalist'. 
+                DETAILS: {mood} {post_type} in the {u_niche} niche, {style_pref} style. 
+                """
                 llm_caps = call_lumi_llm(llm_caps_query, {
-                    'score': v_score, 'mood': mood, 'niche': u_niche, 'style': style_pref, 'top_tip': recs[0]['suggestion']
+                    'score': v_score, 'mood': mood, 'niche': u_niche, 'style': style_pref, 'dna': dna_context
                 })
                 
                 # Robust Parsing
@@ -1074,7 +1096,16 @@ elif page == "Studio":
         u_niche_studio = st.selectbox("Select Niche", ["Fashion", "Tech", "Fitness", "Travel", "Food", "Lifestyle"])
         
         if st.button("✨ Generate Viral Content", use_container_width=True):
-            with st.spinner("Lumi is crafting your viral DNA..."):
+            with st.spinner("Llama 3.3 is crafting your viral DNA..."):
+                # --- NEW: DATASET DNA EXTRACTION ---
+                dna_context = "No historical data yet."
+                if os.path.exists('final_dataset.csv'):
+                    try:
+                        df_dna = pd.read_csv('final_dataset.csv')
+                        niche_avg = df_dna[df_dna['niche'] == u_niche_studio]
+                        dna_context = f"Niche Avg Virality: {niche_avg['virality_score'].mean():.1f}%, Best Post Type: {niche_avg['post_type'].mode()[0]}"
+                    except: pass
+
                 # Style Preference from session state
                 style_pref = st.session_state.get('style_pref', 'Balanced')
                 
@@ -1096,7 +1127,7 @@ elif page == "Studio":
                 """
                 
                 llm_res = call_lumi_llm(prompt, {
-                    'score': 85, 'mood': '✨ Creative', 'niche': u_niche_studio, 'style': style_pref, 'top_tip': 'Focus on high-emotion hooks.'
+                    'score': 85, 'mood': '✨ Creative', 'niche': u_niche_studio, 'style': style_pref, 'dna': dna_context
                 })
                 
                 if llm_res and "⚠️" not in llm_res:
