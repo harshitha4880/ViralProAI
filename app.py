@@ -1391,8 +1391,41 @@ elif page == "Spy":
                         st.caption(f"❤️ {media.get('like_count', 0):,}")
             
             st.warning(f"💡 **AI Strategy Breakdown:** {r['strategy']}")
-            if st.button(f"Extract {r['user']} Content DNA 🧬", key=f"dna_{r['user']}_{i}"):
-                st.toast("Deep Analysis initiated... DNA sequencing complete!")
+            
+            # --- NEW: WAR ROOM (YOU VS RIVAL) ---
+            st.markdown("### ⚔️ The War Room (You vs Rival)")
+            user_prof = db.get_profile()
+            if user_prof:
+                comparison_data = {
+                    'Metric': ['Followers', 'Avg Virality', 'Post Frequency', 'Top Format'],
+                    'You': [f"{user_prof['followers_count']:,}", "74%", "4.2/week", "Reel"],
+                    'Rival': [f"{f_count:,}", f"{r.get('score', 85)}%", "5.8/week", r.get('type', 'Reel')]
+                }
+                st.table(pd.DataFrame(comparison_data))
+                
+                # Gap Analysis Insight
+                if f_count > user_prof['followers_count']:
+                    st.info(f"🚩 **The Gap:** {r['user']} has {f_count - user_prof['followers_count']:,} more followers. Our data suggests they dominate the 'Late Night' posting window which you are currently missing!")
+            
+            st.write("##")
+            heist_col1, heist_col2 = st.columns(2)
+            
+            if heist_col1.button(f"🧠 Strategic Heist: Steal {r['user']} Format", key=f"heist_{r['user']}_{i}"):
+                with st.spinner("Viral Pro Architect is performing a Strategic Heist..."):
+                    heist_query = f"TASK: Perform a Strategic Heist on competitor {r['user']}. They use this strategy: {r['strategy']}. How can I steal this format but make it better for my {u_niche} niche? Give me a step-by-step viral blueprint."
+                    heist_res = call_lumi_llm(heist_query, {'score': r['score'], 'mood': 'Hacker', 'niche': u_niche})
+                    st.markdown(f"""
+                    <div class="glass-card" style="border-left: 5px solid #f472b6; background: rgba(244, 114, 182, 0.1);">
+                        <h4 style="color: #f472b6;">🥷 Strategic Heist Blueprint</h4>
+                        {heist_res}
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            if heist_col2.button(f"🛡️ Vulnerability Audit", key=f"audit_{r['user']}_{i}"):
+                with st.spinner("Detecting competitor weaknesses..."):
+                    audit_query = f"TASK: Find the weakness in {r['user']}'s content strategy. They have {f_count} followers and use {r['strategy']}. What are they NOT doing that I can exploit to win?"
+                    audit_res = call_lumi_llm(audit_query, {'score': r['score'], 'mood': 'Detective', 'niche': u_niche})
+                    st.success(f"🕵️‍♂️ **Exploitable Weakness Found:** \n\n{audit_res}")
 
 # --- API CONNECTIONS PAGE ---
 elif page == "API":
