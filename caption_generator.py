@@ -1,4 +1,4 @@
-actuall import random
+import random
 from textblob import TextBlob
 import re
 
