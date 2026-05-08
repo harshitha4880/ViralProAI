@@ -884,9 +884,9 @@ elif page == "Prediction":
 
             st.write("#### 🧬 Content DNA Insights")
             dna_col1, dna_col2, dna_col3 = st.columns(3)
-            dna_col1.metric("Sentiment Flow", res['metadata']['nlp']['sentiment_flow'])
-            dna_col2.metric("Hook Strength", f"{res['metadata']['nlp']['hook_strength']}/10")
-            dna_col3.metric("Readability", res['metadata']['nlp']['readability'])
+            dna_col1.metric("Sentiment Flow", res['metadata']['nlp'].get('sentiment_flow', 'Neutral'))
+            dna_col2.metric("Hook Strength", f"{res['metadata']['nlp'].get('hook_strength', 0)}/10")
+            dna_col3.metric("Readability", res['metadata']['nlp'].get('readability', 'N/A'))
 
             st.write("#### 🧪 Quality Metrics (Compared to Viral Winners)")
             q_col1, q_col2, q_col3 = st.columns(3)

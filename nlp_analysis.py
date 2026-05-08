@@ -11,7 +11,8 @@ class NLPAnalyzer:
                 'hook_strength': 0,
                 'caption_quality': 0,
                 'emotions': self._get_default_emotions(),
-                'sentiment_flow': "Neutral"
+                'sentiment_flow': "Neutral",
+                'readability': "N/A"
             }
 
         blob = TextBlob(caption)
