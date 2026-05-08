@@ -124,9 +124,20 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
     /* TARGETED TYPOGRAPHY (NO GLOBAL OVERLAP) */
-    * { 
+    * :not(.stIcon):not(i):not([class*="material-icons"]) { 
         font-family: 'Inter', sans-serif !important; 
         color: #ffffff;
+    }
+    
+    /* Hide broken ligatures */
+    .stIcon {
+        font-family: inherit !important;
+    }
+    
+    /* Remove specific broken arrow text if it persists */
+    [data-testid="stSidebarNav"] span {
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
     
     .stApp {
