@@ -84,6 +84,17 @@ def call_lumi_llm(user_query, context_data):
                 )
                 return response.choices[0].message.content
             except Exception as e:
+                if "insufficient_quota" in str(e) or "429" in str(e):
+                    # AUTOMATIC FAIL-SAFE: Fallback to Gemini
+                    st.toast("🛡️ ChatGPT Quota Reached. Switching to Lumi Neural Backup...")
+                    try:
+                        genai.configure(api_key=creds['gemini_key'])
+                        model = genai.GenerativeModel('gemini-1.5-flash')
+                        history_text = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state['lumi_history'][-5:]])
+                        response = model.generate_content(f"{system_prompt}\n\nHistory: {history_text}\n\nUser Question: {user_query}")
+                        return f"🛡️ **Neural Backup Active:** {response.text}"
+                    except:
+                        return f"⚠️ ChatGPT Quota Error. Please add credits at platform.openai.com"
                 return f"⚠️ ChatGPT Neural Error: {str(e)}"
         
         elif creds.get('gemini_key'):
