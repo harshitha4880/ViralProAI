@@ -417,11 +417,11 @@ with st.sidebar:
             st.rerun()
 
     st.markdown("---")
-        
-        st.markdown("### 📅 Auto-Pilot Scheduler")
-        st.write("Next Post: **Today, 7:00 PM**")
-        if st.button("🚀 Enable Auto-Post"):
-            st.toast("Auto-Pilot Mode Enabled! 🤖")
+    
+    st.markdown("### 📅 Auto-Pilot Scheduler")
+    st.write("Next Post: **Today, 7:00 PM**")
+    if st.button("🚀 Enable Auto-Post"):
+        st.toast("Auto-Pilot Mode Enabled! 🤖")
     
     # --- BEST TIME NOTIFICATION ---
     if os.path.exists('viral_profile.json'):
