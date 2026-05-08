@@ -156,42 +156,39 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* Glassmorphism Cards with Elite Boundary */
+    /* Glassmorphism Cards (INDUSTRIAL PRO ALIGNMENT) */
     .glass-card {
-        background: rgba(255, 255, 255, 0.08);
-        backdrop-filter: blur(25px);
-        border-radius: 28px;
-        padding: 40px;
-        border: 2px solid rgba(139, 92, 246, 0.4) !important; /* THE BOUNDARY */
-        margin-bottom: 35px;
-        box-shadow: 0 15px 45px 0 rgba(0, 0, 0, 0.9), 0 0 20px rgba(139, 92, 246, 0.1);
-        transition: all 0.4s ease;
-        font-weight: 600 !important;
+        background: rgba(15, 23, 42, 0.95); /* Deeper Matte Dark */
+        backdrop-filter: blur(15px);
+        border-radius: 20px;
+        padding: 35px;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important; /* SLEEK BOUNDARY */
+        margin-bottom: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
     }
     
     .glass-card:hover {
-        transform: translateY(-8px);
-        border: 2px solid rgba(236, 72, 153, 0.6) !important; /* Boundary Shift */
-        box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
+        border: 1px solid rgba(139, 92, 246, 0.4) !important;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
     }
 
     h1, h2, h3, h4, h5, h6 {
         color: #ffffff !important;
-        font-weight: 900 !important;
-        letter-spacing: -1.2px;
-        margin-bottom: 25px !important;
-        text-shadow: 2px 2px 10px rgba(0,0,0,1);
+        font-weight: 800 !important;
+        letter-spacing: -0.5px;
+        margin-bottom: 20px !important;
+        text-shadow: none !important;
     }
 
     .stMarkdown p, .stMarkdown li {
-        font-size: 1.15rem !important;
-        line-height: 2.2 !important; /* ULTRA-AIRY SPACING */
-        letter-spacing: 0.03em;
-        text-align: justify !important;
-        text-justify: inter-word !important;
-        color: #ffffff !important;
+        font-size: 1.1rem !important;
+        line-height: 1.7 !important; /* BALANCED SPACING */
+        letter-spacing: 0.01em;
+        text-align: left !important; /* ALIGN LEFT AS PER IMAGE */
+        color: #cbd5e1 !important; /* Matte Off-White */
         width: 100% !important;
-        margin-bottom: 20px !important;
+        margin-bottom: 15px !important;
     }
 
     /* Metrics High Visibility */
