@@ -1572,7 +1572,10 @@ elif page == "API":
                             st.write(f"**Linked FB Page ID:** `{api.facebook_page_id}`")
                             st.info("📊 **Permissions Check:** Your account is successfully linked and 'Business Discovery' is active.")
                     else:
-                        st.error("❌ **Token ERROR:** Your token has either expired or lacks 'Business Discovery' permissions.")
+                        st.error("❌ **Token ERROR:** Meta rejected the request.")
+                        if api.last_error:
+                            st.info(f"🛰️ **Meta Feedback:** `{api.last_error}`")
+                        
                         st.markdown("""
                         **Quick Fixes:**
                         1. Visit the [Meta Explorer](https://developers.facebook.com/tools/explorer/)
