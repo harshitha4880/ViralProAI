@@ -1528,7 +1528,6 @@ elif page == "Tracker":
     st.markdown("---")
     
     sched = db.get_schedule()
-    if not sched.empty:
     # 4. LOGGING SECTION
     if not sched.empty:
         with st.expander("➕ Log New Post Performance (Fine-Tune the Model)"):
