@@ -156,39 +156,46 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* Glassmorphism Cards (INDUSTRIAL PRO ALIGNMENT) */
+    /* --- OPTION A: CYBERPUNK COMMAND IDENTITY --- */
+    .stApp {
+        background: linear-gradient(135deg, #020617 0%, #0f172a 50%, #1e1b4b 100%) !important;
+        background-attachment: fixed !important;
+    }
+
+    /* Glassmorphism Cards (CYBERPUNK ELITE) */
     .glass-card {
-        background: rgba(15, 23, 42, 0.95); /* Deeper Matte Dark */
-        backdrop-filter: blur(15px);
-        border-radius: 20px;
-        padding: 35px;
-        border: 1px solid rgba(255, 255, 255, 0.1) !important; /* SLEEK BOUNDARY */
-        margin-bottom: 30px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        transition: all 0.3s ease;
+        background: rgba(15, 23, 42, 0.7);
+        backdrop-filter: blur(25px) saturate(180%);
+        border-radius: 24px;
+        padding: 40px;
+        border: 2px solid rgba(139, 92, 246, 0.3) !important; /* GOWING VIOLET BOUNDARY */
+        margin-bottom: 35px;
+        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.8), 0 0 15px rgba(139, 92, 246, 0.1);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
     
     .glass-card:hover {
-        border: 1px solid rgba(139, 92, 246, 0.4) !important;
-        box-shadow: 0 15px 45px rgba(0, 0, 0, 0.7);
+        transform: translateY(-10px);
+        border: 2px solid #ec4899 !important; /* PINK PULSE BOUNDARY */
+        box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3), 0 0 30px rgba(236, 72, 153, 0.2);
     }
 
     h1, h2, h3, h4, h5, h6 {
         color: #ffffff !important;
         font-weight: 800 !important;
-        letter-spacing: -0.5px;
-        margin-bottom: 20px !important;
-        text-shadow: none !important;
+        letter-spacing: -1px;
+        margin-bottom: 25px !important;
+        text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
     }
 
     .stMarkdown p, .stMarkdown li {
-        font-size: 1.1rem !important;
-        line-height: 1.7 !important; /* BALANCED SPACING */
-        letter-spacing: 0.01em;
-        text-align: left !important; /* ALIGN LEFT AS PER IMAGE */
-        color: #cbd5e1 !important; /* Matte Off-White */
+        font-size: 1.15rem !important;
+        line-height: 1.8 !important;
+        letter-spacing: 0.02em;
+        text-align: left !important;
+        color: #f1f5f9 !important; /* Pure High-Contrast White */
         width: 100% !important;
-        margin-bottom: 15px !important;
+        margin-bottom: 20px !important;
     }
 
     /* Metrics High Visibility */
