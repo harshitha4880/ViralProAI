@@ -121,13 +121,14 @@ track_growth()
 # --- CUSTOM CSS ---
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
-    /* GLOBAL BOLDING & BRIGHTNESS */
+    /* GLOBAL TYPOGRAPHY REFINEMENT */
     * { 
-        font-family: 'Outfit', sans-serif !important; 
-        font-weight: 700 !important; /* ULTRA BOLD */
-        color: #ffffff !important;   /* PURE WHITE CONTRAST */
+        font-family: 'Inter', sans-serif !important; 
+        font-weight: 600 !important; /* Balanced Bold */
+        color: #ffffff !important;   
+        letter-spacing: -0.01em;
     }
 
     /* Main Background with Liquid Shift */
@@ -189,8 +190,11 @@ st.markdown("""
     }
     
     .stMarkdown p, .stMarkdown li {
-        font-size: 1.1rem !important;
-        line-height: 1.7;
+        font-size: 1.05rem !important;
+        line-height: 1.8 !important; /* Breathable spacing */
+        text-align: justify !important;
+        text-justify: inter-word !important;
+        color: #e2e8f0 !important;
     }
     
     /* Custom Button Glow */
