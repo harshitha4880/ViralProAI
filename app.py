@@ -128,19 +128,20 @@ st.markdown("""
         font-family: 'Inter', sans-serif !important; 
     }
     
-    /* KILL THE GHOST ICONS */
-    [data-testid="stExpanderIcon"], .st-emotion-cache-p5msec {
+    /* KILL ALL GHOST ICONS GLOBALLY */
+    [data-testid="stExpanderIcon"], 
+    .st-emotion-cache-p5msec, 
+    [data-testid="stIcon"],
+    span[data-testid="stWidgetLabel"] svg {
         display: none !important;
         visibility: hidden !important;
         width: 0 !important;
-        height: 0 !important;
     }
     
-    /* Ensure icon text stays hidden */
-    .stIcon, [data-testid="stIcon"] {
-        font-family: inherit !important;
+    /* Force hide any text that looks like a Material Icon ligature */
+    span:contains("arrow_"), span:contains("expand_"), span:contains("check") {
+        font-size: 0 !important;
         color: transparent !important;
-        user-select: none !important;
     }
     
     .stApp {
