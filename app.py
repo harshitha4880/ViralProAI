@@ -19,18 +19,15 @@ from caption_generator import CaptionGenerator
 from audio_matchmaker import AudioMatchmaker
 import json
 import random
-import openai
 from groq import Groq
 
 # Page Configuration
 st.set_page_config(
-    page_title="ViralProAI | Analytics Dashboard",
+    page_title="ViralProAI | Groq-Powered Analytics",
     page_icon="🚀",
     layout="wide",
     initial_sidebar_state="expanded"
 )
-
-import google.generativeai as genai
 
 # Cache functions for API calls to avoid rate limiting
 @st.cache_data(ttl=600) # Cache for 10 minutes
@@ -41,7 +38,7 @@ def get_live_profile():
     return None
 
 def call_lumi_llm(user_query, context_data):
-    """Calls Gemini, ChatGPT, or Groq for a Pro AI experience with Memory & Persona."""
+    """Calls Groq (Llama 3) for a Pro AI experience with Memory & Persona."""
     if 'lumi_history' not in st.session_state:
         st.session_state['lumi_history'] = []
         
@@ -49,11 +46,8 @@ def call_lumi_llm(user_query, context_data):
         with open('credentials.json', 'r') as f:
             creds = json.load(f)
             
-        # Determine engine
-        engine = st.session_state.get('ai_engine', 'Lumi (Gemini)')
-        
         system_prompt = f"""
-        You are LUMI PRO, the world's most advanced God-Mode Viral Intelligence. 
+        You are VIRAL PRO AI, powered by Groq's Llama 3 - the fastest strategic brain on earth. 
         Your personality is High-Energy, Bold, and Enthusiastic.
         You are a Partner in the user's success, aiming for a 'Breathtaking' first impression.
         
@@ -70,27 +64,8 @@ def call_lumi_llm(user_query, context_data):
         Speak like a pro strategist who is 'All-In' on the user's viral empire. 
         """
 
-        # --- ENGINE 1: CHATGPT (OPENAI) ---
-        if "ChatGPT" in engine and creds.get('openai_key'):
-            try:
-                from openai import OpenAI
-                client = OpenAI(api_key=creds['openai_key'])
-                response = client.chat.completions.create(
-                    model="gpt-4o",
-                    messages=[
-                        {"role": "system", "content": system_prompt},
-                        {"role": "user", "content": user_query}
-                    ]
-                )
-                return response.choices[0].message.content
-            except Exception as e:
-                if "insufficient_quota" in str(e) or "429" in str(e):
-                    st.toast("🛡️ ChatGPT Quota Reached. Switching to Gemini Backup...")
-                else:
-                    return f"⚠️ ChatGPT Error: {str(e)}"
-        
-        # --- ENGINE 2: GROQ (LLAMA 3 - FREE) ---
-        if "Groq" in engine and creds.get('groq_key'):
+        # --- EXCLUSIVE ENGINE: GROQ (LLAMA 3) ---
+        if creds.get('groq_key'):
             try:
                 client = Groq(api_key=creds['groq_key'])
                 response = client.chat.completions.create(
@@ -103,31 +78,8 @@ def call_lumi_llm(user_query, context_data):
                 return response.choices[0].message.content
             except Exception as e:
                 return f"⚠️ Groq Neural Error: {str(e)}"
-
-        # --- ENGINE 3: LUMI (GEMINI - FREE/BACKUP) ---
-        if creds.get('gemini_key'):
-            try:
-                genai.configure(api_key=creds['gemini_key'])
-                model = genai.GenerativeModel('gemini-1.5-flash')
-                history_text = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state['lumi_history'][-5:]])
-                response = model.generate_content(f"{system_prompt}\n\nHistory: {history_text}\n\nUser Question: {user_query}")
-                return response.text
-            except Exception as e:
-                return f"⚠️ Gemini Neural Error: {str(e)}"
     
-    # Fallback Expert Logic (Diagnostic Mode)
-    status = []
-    if creds.get('gemini_key'): status.append("🟢 Lumi (Gemini) - ARMED")
-    else: status.append("🔴 Lumi (Gemini) - STANDBY")
-    
-    if creds.get('openai_key'): status.append("🟢 ChatGPT (OpenAI) - ARMED")
-    else: status.append("🔴 ChatGPT (OpenAI) - STANDBY")
-    
-    if creds.get('groq_key'): status.append("🟢 Groq (Llama 3) - ARMED")
-    else: status.append("🔴 Groq (Llama 3) - STANDBY")
-    
-    status_str = "\n".join(status)
-    return f"### 🎯 NEURAL SYSTEM STATUS! 🥂🚀🔥\n\nI'm currently in standby mode. To ignite my brain, please add a key in **Settings**:\n\n{status_str}\n\n**Tip:** Groq is 100% free and blazingly fast! 🧠💎✨"
+    return "### 🎯 NEURAL SYSTEM STANDBY! 🥂🚀🔥\n\nPlease add your **Groq Key** in Settings to ignite the brain! 🧠💎✨"
 
 @st.cache_data(ttl=1800) # Cache media for 30 minutes
 def get_live_media():
@@ -368,7 +320,7 @@ REV_NAV_MAP = {v: k for k, v in NAV_MAP.items()}
 # --- SIDEBAR ---
 with st.sidebar:
     # --- GLOBAL IDENTITY SYNC ---
-    ai_engine_name = st.session_state.get('ai_engine', 'Lumi (Gemini)').split(' ')[0]
+    ai_engine_name = "Groq"
     
     st.image("assets/logo.png", use_container_width=True)
     st.markdown(f"""
@@ -425,7 +377,7 @@ with st.sidebar:
     st.markdown("---")
         
     # --- GLOBAL AI CHAT ---
-    st.markdown(f"### 🐝 Ask {ai_engine_name} Pro")
+    st.markdown("### 🤖 Ask Groq Pro")
     
     # Initialize history
     if 'lumi_history' not in st.session_state:
@@ -434,11 +386,10 @@ with st.sidebar:
     chat_container = st.container(height=300)
     with chat_container:
         for message in st.session_state['lumi_history']:
-            avatar_icon = "🤖" if "ChatGPT" in ai_engine_name else "🐝"
-            with st.chat_message(message["role"], avatar=avatar_icon if message["role"] == "assistant" else "👤"):
+            with st.chat_message(message["role"], avatar="🤖" if message["role"] == "assistant" else "👤"):
                 st.markdown(message["content"])
     
-    if prompt := st.chat_input(f"Ask {ai_engine_name} anything..."):
+    if prompt := st.chat_input("Ask Groq anything..."):
         with st.chat_message("user", avatar="👤"):
             st.markdown(prompt)
         st.session_state['lumi_history'].append({"role": "user", "content": prompt})
@@ -449,9 +400,8 @@ with st.sidebar:
             'rival_data': str(st.session_state.get('watchlist', []))[:200]
         }
         
-        avatar_icon = "🤖" if "ChatGPT" in ai_engine_name else "🐝"
-        with st.chat_message("assistant", avatar=avatar_icon):
-            with st.spinner(f"{ai_engine_name} is thinking..."):
+        with st.chat_message("assistant", avatar="🤖"):
+            with st.spinner("Groq is thinking..."):
                 response = call_lumi_llm(prompt, ctx)
                 st.markdown(response)
         st.session_state['lumi_history'].append({"role": "assistant", "content": response})
@@ -1464,11 +1414,7 @@ elif page == "API":
         new_token = st.text_input("Update Instagram Access Token", type="password")
         new_app_id = st.text_input("Update Meta App ID")
         new_secret = st.text_input("Update Meta App Secret", type="password")
-        new_gemini_key = st.text_input("Update Lumi AI (Gemini) Key", type="password", help="Get a free key from makersuite.google.com")
-        new_openai_key = st.text_input("Update ChatGPT (OpenAI) Key", type="password")
         new_groq_key = st.text_input("Update Groq (Llama 3 - FREE) Key", type="password")
-        
-        st.session_state['ai_engine'] = st.selectbox("Preferred AI Engine", ["Lumi (Gemini)", "ChatGPT (GPT-4o)", "Groq (Llama 3)"])
         
         if st.button("💾 Save & Reconnect"):
             if new_token and new_app_id and new_secret:
@@ -1477,10 +1423,6 @@ elif page == "API":
                     "app_id": new_app_id,
                     "app_secret": new_secret
                 }
-                if new_gemini_key:
-                    creds["gemini_key"] = new_gemini_key
-                if new_openai_key:
-                    creds["openai_key"] = new_openai_key
                 if new_groq_key:
                     creds["groq_key"] = new_groq_key
                     
