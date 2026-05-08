@@ -20,6 +20,7 @@ from audio_matchmaker import AudioMatchmaker
 import json
 import random
 import openai
+from groq import Groq
 
 # Page Configuration
 st.set_page_config(
@@ -40,7 +41,7 @@ def get_live_profile():
     return None
 
 def call_lumi_llm(user_query, context_data):
-    """Calls either Gemini or ChatGPT for a Pro AI experience with Memory & Persona."""
+    """Calls Gemini, ChatGPT, or Groq for a Pro AI experience with Memory & Persona."""
     if 'lumi_history' not in st.session_state:
         st.session_state['lumi_history'] = []
         
@@ -53,24 +54,23 @@ def call_lumi_llm(user_query, context_data):
         
         system_prompt = f"""
         You are LUMI PRO, the world's most advanced God-Mode Viral Intelligence. 
-        Your personality is High-Energy, Bold, and Enthusiastic (like a world-class AI coding assistant).
-        You are a Partner in the user's success, always aiming for a 'Breathtaking' first impression.
+        Your personality is High-Energy, Bold, and Enthusiastic.
+        You are a Partner in the user's success, aiming for a 'Breathtaking' first impression.
         
         STYLE GUIDE:
         - Use RICH Aesthetics: Bold headers, bullet points, vibrant language.
-        - Use Emojis FREQUENTLY: (🥂, 🚀, 🔥, 🕵️‍♂️, 💎, ✨, 🧠, 🎯, ⚖️, 🛰️).
-        - Use Technical Terms: 'Neural Ignition', 'Algorithm Domination', 'Portal is open'.
+        - Use Emojis FREQUENTLY: (🥂, 🚀, 🔥, 💎, ✨, 🧠, 🎯, ⚖️, 🛰️).
         
         CURRENT CONTEXT:
         - Viral IQ: {context_data.get('score', 'N/A')}%
         - Mood DNA: {context_data.get('mood', 'Neutral')}
         - Niche Authority: {context_data.get('niche', 'General')}
-        - Rival Data Sync: {context_data.get('rival_data', 'No rivals yet')}
         
         MISSION:
         Speak like a pro strategist who is 'All-In' on the user's viral empire. 
         """
 
+        # --- ENGINE 1: CHATGPT (OPENAI) ---
         if "ChatGPT" in engine and creds.get('openai_key'):
             try:
                 from openai import OpenAI
@@ -85,19 +85,27 @@ def call_lumi_llm(user_query, context_data):
                 return response.choices[0].message.content
             except Exception as e:
                 if "insufficient_quota" in str(e) or "429" in str(e):
-                    # AUTOMATIC FAIL-SAFE: Fallback to Gemini
-                    st.toast("🛡️ ChatGPT Quota Reached. Switching to Lumi Neural Backup...")
-                    try:
-                        genai.configure(api_key=creds['gemini_key'])
-                        model = genai.GenerativeModel('gemini-1.5-flash')
-                        history_text = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state['lumi_history'][-5:]])
-                        response = model.generate_content(f"{system_prompt}\n\nHistory: {history_text}\n\nUser Question: {user_query}")
-                        return f"🛡️ **Neural Backup Active:** {response.text}"
-                    except:
-                        return f"⚠️ ChatGPT Quota Error. Please add credits at platform.openai.com"
-                return f"⚠️ ChatGPT Neural Error: {str(e)}"
+                    st.toast("🛡️ ChatGPT Quota Reached. Switching to Gemini Backup...")
+                else:
+                    return f"⚠️ ChatGPT Error: {str(e)}"
         
-        elif creds.get('gemini_key'):
+        # --- ENGINE 2: GROQ (LLAMA 3 - FREE) ---
+        if "Groq" in engine and creds.get('groq_key'):
+            try:
+                client = Groq(api_key=creds['groq_key'])
+                response = client.chat.completions.create(
+                    model="llama3-70b-8192",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_query}
+                    ]
+                )
+                return response.choices[0].message.content
+            except Exception as e:
+                return f"⚠️ Groq Neural Error: {str(e)}"
+
+        # --- ENGINE 3: LUMI (GEMINI - FREE/BACKUP) ---
+        if creds.get('gemini_key'):
             try:
                 genai.configure(api_key=creds['gemini_key'])
                 model = genai.GenerativeModel('gemini-1.5-flash')
@@ -108,10 +116,7 @@ def call_lumi_llm(user_query, context_data):
                 return f"⚠️ Gemini Neural Error: {str(e)}"
     
     # Fallback Expert Logic
-    query_lower = user_query.lower()
-    if "hi" in query_lower or "hello" in query_lower:
-        return f"### 🏆 WELCOME TO THE EMPIRE! 🥂🚀🔥\n\nI'm ready to dominate! 🧠💎✨"
-    return f"### 🎯 NEURAL STRATEGY INSIGHT! 🥂🚀🔥\n\n(Fallback Mode) Try focusing on visual energy! 🥂🚀✨"
+    return "### 🎯 NEURAL FALLBACK ACTIVE! 🥂🚀🔥\n\nI'm in standby mode. Please verify your API keys in Settings! 🧠💎✨"
 
 @st.cache_data(ttl=1800) # Cache media for 30 minutes
 def get_live_media():
@@ -1450,8 +1455,9 @@ elif page == "API":
         new_secret = st.text_input("Update Meta App Secret", type="password")
         new_gemini_key = st.text_input("Update Lumi AI (Gemini) Key", type="password", help="Get a free key from makersuite.google.com")
         new_openai_key = st.text_input("Update ChatGPT (OpenAI) Key", type="password")
+        new_groq_key = st.text_input("Update Groq (Llama 3 - FREE) Key", type="password")
         
-        st.session_state['ai_engine'] = st.selectbox("Preferred AI Engine", ["Lumi (Gemini)", "ChatGPT (GPT-4o)"])
+        st.session_state['ai_engine'] = st.selectbox("Preferred AI Engine", ["Lumi (Gemini)", "ChatGPT (GPT-4o)", "Groq (Llama 3)"])
         
         if st.button("💾 Save & Reconnect"):
             if new_token and new_app_id and new_secret:
@@ -1464,6 +1470,8 @@ elif page == "API":
                     creds["gemini_key"] = new_gemini_key
                 if new_openai_key:
                     creds["openai_key"] = new_openai_key
+                if new_groq_key:
+                    creds["groq_key"] = new_groq_key
                     
                 with open('credentials.json', 'w') as f:
                     json.dump(creds, f)
