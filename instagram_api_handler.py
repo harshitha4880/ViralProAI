@@ -51,7 +51,7 @@ class InstagramAPIHandler:
     def get_profile_info(self):
         """Fetches follower count and profile details."""
         if not self.ig_user_id:
-            self.get_instagram_business_account_id()
+            self.discover_ids()
         
         if self.ig_user_id:
             url = f"{self.base_url}{self.ig_user_id}?fields=name,username,followers_count,media_count,profile_picture_url&access_token={self.access_token}"
@@ -65,7 +65,7 @@ class InstagramAPIHandler:
     def get_recent_media(self, limit=10):
         """Fetches the most recent media posts with engagement metrics."""
         if not self.ig_user_id:
-            self.get_instagram_business_account_id()
+            self.discover_ids()
         
         if self.ig_user_id:
             # Removed 'engagement' as it's an insights field, added 'thumbnail_url' for reels
@@ -79,7 +79,7 @@ class InstagramAPIHandler:
     def get_competitor_info(self, username):
         """Uses Business Discovery API to fetch public stats and recent media of a competitor."""
         if not self.ig_user_id:
-            self.get_instagram_business_account_id()
+            self.discover_ids()
         
         if self.ig_user_id:
             # Clean username (remove @)
