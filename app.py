@@ -123,15 +123,12 @@ st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
-    /* GLOBAL TYPOGRAPHY REFINEMENT */
+    /* TARGETED TYPOGRAPHY (NO GLOBAL OVERLAP) */
     * { 
         font-family: 'Inter', sans-serif !important; 
-        font-weight: 600 !important; /* Balanced Bold */
-        color: #ffffff !important;   
-        letter-spacing: -0.01em;
+        color: #ffffff;
     }
-
-    /* Main Background with Liquid Shift */
+    
     .stApp {
         background: linear-gradient(-45deg, #020617, #0f172a, #1e1b4b, #020617);
         background-size: 400% 400%;
@@ -154,6 +151,7 @@ st.markdown("""
         margin-bottom: 25px;
         box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        font-weight: 600 !important; /* Bold only inside cards */
     }
     
     .glass-card:hover {
