@@ -1,4 +1,4 @@
-import random
+actuall import random
 from textblob import TextBlob
 import re
 
@@ -67,12 +67,13 @@ class CaptionGenerator:
 
     def generate_hashtags(self, niche, keywords="", count=10):
         """Generates a mix of niche and keyword hashtags."""
+        niche = niche if niche else "Lifestyle"
         base_tags = self.hashtags_map.get(niche, ["#trending", "#viral"])
         
         # Add keyword-based hashtags
         extra_tags = []
         if keywords:
-            words = re.findall(r'\w+', keywords.lower())
+            words = re.findall(r'\w+', str(keywords).lower())
             extra_tags = [f"#{w}" for w in words]
 
         combined = list(set(base_tags + extra_tags))
@@ -82,10 +83,13 @@ class CaptionGenerator:
     def improve_caption(self, existing_caption):
         """Enhances an existing caption with sentiment and emojis."""
         if not existing_caption:
-            return ""
+            return "Elevating your content! ✨"
 
-        blob = TextBlob(existing_caption)
-        sentiment = blob.sentiment.polarity
+        try:
+            blob = TextBlob(str(existing_caption))
+            sentiment = blob.sentiment.polarity
+        except:
+            sentiment = 0.5 # Default to neutral/positive
         
         improved = existing_caption
         # If sentiment is low, add positive boosters
@@ -101,6 +105,10 @@ class CaptionGenerator:
 
     def generate_caption(self, keywords, niche, tone, post_type, existing_caption=None, style_pref="Balanced"):
         """Full caption generation logic tailored by style preference."""
+        keywords = keywords if keywords else ""
+        niche = niche if niche else "Lifestyle"
+        tone = tone if tone else "Casual"
+        
         hook = self.generate_hook(tone)
         cta = self.generate_cta()
         hashtags = self.generate_hashtags(niche, keywords)
@@ -119,7 +127,8 @@ class CaptionGenerator:
             body = self.improve_caption(existing_caption)
         else:
             # Generate body from keywords
-            body = f"Discovering the best of {keywords if keywords else niche} today. {tone} vibes all around! 🌟{style_mod}"
+            body_topic = keywords if keywords else niche
+            body = f"Discovering the best of {body_topic} today. {tone} vibes all around! 🌟{style_mod}"
             if post_type == "Reel":
                 body += " This reel captures the essence of it perfectly. 🎬"
             elif post_type == "Carousel":
