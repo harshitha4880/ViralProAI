@@ -16,40 +16,37 @@ class InstagramAPIHandler:
         self.discover_ids()
 
     def discover_ids(self):
-        """Automatically finds the Page and IG ID for the current token."""
+        """Automatically finds the Page and IG ID for the current token by scanning all pages."""
         try:
-            self.get_facebook_page_id()
-            self.get_instagram_business_account_id()
-        except Exception as e:
-            self.last_error = str(e)
-
-    def get_facebook_page_id(self):
-        """Fetches the Facebook Page ID linked to the account."""
-        url = f"{self.base_url}me/accounts?access_token={self.access_token}"
-        response = requests.get(url).json()
-        if 'error' in response:
-            self.last_error = response['error'].get('message', 'Unknown Meta Error')
-            return None
-        if 'data' in response and len(response['data']) > 0:
-            self.facebook_page_id = response['data'][0]['id']
-            return self.facebook_page_id
-        return None
-
-    def get_instagram_business_account_id(self):
-        """Fetches the Instagram Business Account ID linked to the Facebook Page."""
-        if not self.facebook_page_id:
-            self.get_facebook_page_id()
-        
-        if self.facebook_page_id:
-            url = f"{self.base_url}{self.facebook_page_id}?fields=instagram_business_account&access_token={self.access_token}"
+            # 1. Fetch all Facebook Pages linked to this token
+            url = f"{self.base_url}me/accounts?access_token={self.access_token}"
             response = requests.get(url).json()
+            
             if 'error' in response:
                 self.last_error = response['error'].get('message', 'Unknown Meta Error')
-                return None
-            if 'instagram_business_account' in response:
-                self.ig_user_id = response['instagram_business_account']['id']
-                return self.ig_user_id
-        return None
+                return
+            
+            pages = response.get('data', [])
+            if not pages:
+                self.last_error = "No Facebook Pages found linked to this token."
+                return
+
+            # 2. Iterate through each page to find the linked Instagram Business Account
+            for page in pages:
+                page_id = page.get('id')
+                if page_id:
+                    # Probe this specific page for an IG link
+                    url_ig = f"{self.base_url}{page_id}?fields=instagram_business_account&access_token={self.access_token}"
+                    res_ig = requests.get(url_ig).json()
+                    
+                    if 'instagram_business_account' in res_ig:
+                        self.facebook_page_id = page_id
+                        self.ig_user_id = res_ig['instagram_business_account']['id']
+                        return # Success! Exit early
+            
+            self.last_error = "None of your Facebook Pages are linked to an Instagram Business account."
+        except Exception as e:
+            self.last_error = str(e)
 
     def get_profile_info(self):
         """Fetches follower count and profile details."""
