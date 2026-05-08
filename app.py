@@ -349,11 +349,11 @@ with st.sidebar:
             ViralProAI | {ai_engine_name} Powered
         </h1>
         <style>
-        @keyframes pulseGlow {
-            0% { text-shadow: 0 0 10px rgba(139, 92, 246, 0.2); transform: scale(1); }
-            50% { text-shadow: 0 0 25px rgba(139, 92, 246, 0.6); transform: scale(1.02); }
-            100% { text-shadow: 0 0 10px rgba(139, 92, 246, 0.2); transform: scale(1); }
-        }
+        @keyframes pulseGlow {{
+            0% {{ text-shadow: 0 0 10px rgba(139, 92, 246, 0.2); transform: scale(1); }}
+            50% {{ text-shadow: 0 0 25px rgba(139, 92, 246, 0.6); transform: scale(1.02); }}
+            100% {{ text-shadow: 0 0 10px rgba(139, 92, 246, 0.2); transform: scale(1); }}
+        }}
         </style>
     """, unsafe_allow_html=True)
     st.markdown("---")
