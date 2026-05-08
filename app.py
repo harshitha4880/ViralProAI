@@ -57,24 +57,28 @@ def call_lumi_llm(user_query, context_data):
                 history_text = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state['lumi_history'][-5:]])
                 
                 system_prompt = f"""
-                You are LUMI AI, the world's most advanced Instagram Viral Whisperer. 
-                Your personality is Savvy, Creative, and Proactive (like a Gen-Z marketing genius).
-                You understand: Slang (POV, Fit Check, Vibes, Era, etc.), Emotional Sentiment, and Slang.
+                You are LUMI PRO, the world's most advanced God-Mode Viral Intelligence. 
+                Your personality is High-Energy, Bold, and Enthusiastic (like a world-class AI coding assistant).
+                You are a Partner in the user's success, always aiming for a 'Breathtaking' first impression.
+                
+                STYLE GUIDE:
+                - Use RICH Aesthetics in your text: Bold headers, bullet points, and vibrant language.
+                - Use Emojis FREQUENTLY: (🥂, 🚀, 🔥, 🕵️‍♂️, 💎, ✨, 🧠, 🎯, ⚖️, 🛰️).
+                - Use Technical/Futuristic Terms: 'Neural Ignition', 'Algorithm Domination', 'Portal is open', 'Neural Heart'.
+                - Be PROACTIVE: If they ask a question, give a deep, insightful strategy and end with a high-energy 'God-Mode' sign-off.
                 
                 CURRENT CONTEXT:
-                - Virality Score: {context_data.get('score', 'N/A')}%
-                - Mood/Emotion: {context_data.get('mood', 'Neutral')}
-                - Niche: {context_data.get('niche', 'General')}
-                - Rival Insight: {context_data.get('rival_data', 'No rivals yet')}
+                - Viral IQ: {context_data.get('score', 'N/A')}%
+                - Mood DNA: {context_data.get('mood', 'Neutral')}
+                - Niche Authority: {context_data.get('niche', 'General')}
+                - Rival Data Sync: {context_data.get('rival_data', 'No rivals yet')}
                 
                 CONVERSATION HISTORY:
                 {history_text}
                 
-                INSTRUCTIONS:
-                1. Speak like a pro strategist who cares about the user's growth.
-                2. Use emojis (🐝✨🥂🚀) but keep it high-value.
-                3. If they say 'hi', don't just say hello—ask about their latest reel or offer a quick viral tip.
-                4. Be concise but deeply insightful.
+                MISSION:
+                Speak like a pro strategist who is 'All-In' on the user's viral empire. 
+                Avoid generic advice. Give them a 'Breathtaking' response every single time!
                 """
                 
                 response = model.generate_content(f"{system_prompt}\n\nUser Question: {user_query}")
@@ -82,13 +86,13 @@ def call_lumi_llm(user_query, context_data):
             except Exception as e:
                 return f"⚠️ Lumi Brain Error: {str(e)}"
     
-    # Fallback Expert Logic (if no API key)
+    # Fallback Expert Logic (God-Mode Edition)
     query_lower = user_query.lower()
     if "hi" in query_lower or "hello" in query_lower:
-        return f"Hey! 🐝 Ready to dominate the {context_data.get('niche', 'Instagram')} algorithm today? Your latest {context_data.get('mood', 'content')} looks promising—want me to generate a viral hook for it?"
+        return f"### 🏆 WELCOME TO THE EMPIRE! 🥂🚀🔥\n\nI've just performed a **Neural Sync** with your profile. Your latest **{context_data.get('mood', 'content')}** DNA is looking absolutely world-class! 🧠💎✨\n\nReady to dominate the **{context_data.get('niche', 'Instagram')}** algorithm today? I've got a **'Breathtaking'** viral hook ready for you—want to see it? 🎯🛰️"
     if "caption" in query_lower:
-        return "I've got you! ✍️ Based on your mood, try a 'POV' style hook or something provocative to spark comments. Want a specific one?"
-    return f"Great question! For this {context_data.get('mood', 'Neutral')} post, my data suggests focusing on visual energy to boost your reach by 25%. Try a quick zoom or a transition! 🥂🚀"
+        return "### ✍️ AI-OPTIMIZED VIRAL COPY INCOMING! 🥂🚀🔥\n\nI've got you! 🧠 Based on your current mood DNA, I'm recommending a **'POV' style hook** to trigger massive engagement velocity. 🎯\n\n**Lumi's Pro Tip:** Add a quick zoom in the first 0.5s to lock in your viewer's attention! Want me to generate the full script? 💎✨"
+    return f"### 🎯 NEURAL STRATEGY INSIGHT! 🥂🚀🔥\n\nGreat question! For this **{context_data.get('mood', 'Neutral')}** post, my data suggests performing a **Total Visual Audit** to boost your reach by **+25%**. 🧠💎\n\n**Action Plan:** Try a quick zoom or a high-energy transition to trigger the algorithm! 🥂🚀✨"
 
 @st.cache_data(ttl=1800) # Cache media for 30 minutes
 def get_live_media():
