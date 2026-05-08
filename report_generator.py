@@ -2,6 +2,13 @@ from fpdf import FPDF
 import datetime
 
 class ReportGenerator:
+    def _clean_text(self, text):
+        """Strips non-latin-1 characters from text to avoid PDF encoding errors."""
+        if not isinstance(text, str):
+            text = str(text)
+        # Encode to latin-1 and replace unknown chars with '?'
+        return text.encode('latin-1', 'replace').decode('latin-1')
+
     def generate_pdf(self, results, filename="virality_report.pdf"):
         """
         Creates a professional PDF report.
@@ -45,13 +52,14 @@ class ReportGenerator:
         pdf.cell(200, 10, "3. Key Recommendations", ln=True)
         pdf.set_font("Arial", '', 12)
         for rec in results['recommendations']:
-            pdf.multi_cell(200, 10, f"- [{rec['category']}] {rec['suggestion']} (Impact: {rec['impact']})")
+            cleaned_rec = self._clean_text(f"- [{rec['category']}] {rec['suggestion']} (Impact: {rec['impact']})")
+            pdf.multi_cell(200, 10, cleaned_rec)
         
         pdf.ln(10)
         pdf.set_font("Arial", 'B', 14)
         pdf.cell(200, 10, "Final Strategy:", ln=True)
         pdf.set_font("Arial", 'I', 12)
-        pdf.multi_cell(200, 10, results['strategy'])
+        pdf.multi_cell(200, 10, self._clean_text(results['strategy']))
 
         pdf.output(filename)
         return filename
