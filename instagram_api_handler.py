@@ -10,6 +10,7 @@ class InstagramAPIHandler:
         self.access_token = self.creds['access_token']
         self.ig_user_id = None 
         self.facebook_page_id = None
+        self.last_error = None # Track the latest API error
         
         # Auto-discover on init to ensure 'Spy' works immediately
         self.discover_ids()
@@ -19,13 +20,16 @@ class InstagramAPIHandler:
         try:
             self.get_facebook_page_id()
             self.get_instagram_business_account_id()
-        except:
-            pass
+        except Exception as e:
+            self.last_error = str(e)
 
     def get_facebook_page_id(self):
         """Fetches the Facebook Page ID linked to the account."""
         url = f"{self.base_url}me/accounts?access_token={self.access_token}"
         response = requests.get(url).json()
+        if 'error' in response:
+            self.last_error = response['error'].get('message', 'Unknown Meta Error')
+            return None
         if 'data' in response and len(response['data']) > 0:
             self.facebook_page_id = response['data'][0]['id']
             return self.facebook_page_id
@@ -39,6 +43,9 @@ class InstagramAPIHandler:
         if self.facebook_page_id:
             url = f"{self.base_url}{self.facebook_page_id}?fields=instagram_business_account&access_token={self.access_token}"
             response = requests.get(url).json()
+            if 'error' in response:
+                self.last_error = response['error'].get('message', 'Unknown Meta Error')
+                return None
             if 'instagram_business_account' in response:
                 self.ig_user_id = response['instagram_business_account']['id']
                 return self.ig_user_id
@@ -51,7 +58,11 @@ class InstagramAPIHandler:
         
         if self.ig_user_id:
             url = f"{self.base_url}{self.ig_user_id}?fields=name,username,followers_count,media_count,profile_picture_url&access_token={self.access_token}"
-            return requests.get(url).json()
+            response = requests.get(url).json()
+            if 'error' in response:
+                self.last_error = response['error'].get('message', 'Unknown Meta Error')
+                return None
+            return response
         return None
 
     def get_recent_media(self, limit=10):

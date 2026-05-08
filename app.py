@@ -1602,8 +1602,17 @@ elif page == "API":
                 st.toast("Fetching latest stats...")
                 st.rerun()
         else:
-            st.warning("⚠️ No active connection found.")
-            st.write("Please ensure `credentials.json` is present in the root directory with your App ID and Token.")
+            st.warning("⚠️ **Connection Alert:** No active Instagram Business link found.")
+            if api.last_error:
+                st.error(f"🛰️ **Meta API Feedback:** \n\n`{api.last_error}`")
+                st.markdown("""
+                **Common Root Causes:**
+                1. **No Business Account**: Ensure your IG account is linked to a FB Page.
+                2. **Permissions**: Did you check `instagram_basic` in the Meta Explorer?
+                3. **Account ID**: Discovery failed because this token has no linked Business IDs.
+                """)
+            else:
+                st.write("Please ensure `credentials.json` is present and your token is a 'Long-Lived' Business Token.")
 
         st.markdown("---")
         st.markdown("### 🛠️ Connection Settings")
