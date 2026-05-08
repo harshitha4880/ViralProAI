@@ -203,14 +203,29 @@ st.markdown("""
     }
     
     .stMarkdown p, .stMarkdown li {
-        font-size: 1.05rem !important;
+        font-size: 1.1rem !important;
         line-height: 1.8 !important; /* Breathable spacing */
         text-align: justify !important;
         text-justify: inter-word !important;
-        color: #e2e8f0 !important;
+        color: #f8fafc !important; /* High-contrast off-white */
+        font-weight: 500 !important;
     }
     
-    /* Custom Button Glow */
+    /* Global Primary Text */
+    div[data-testid="stMarkdownContainer"] p, 
+    div[data-testid="stMarkdownContainer"] li,
+    div[data-testid="stText"] {
+        color: #ffffff !important;
+        text-shadow: 0px 0px 1px rgba(255,255,255,0.2);
+    }
+    
+    /* Header Pop */
+    h1, h2, h3, h4, h5, h6 {
+        color: #ffffff !important;
+        font-weight: 900 !important;
+        letter-spacing: -1px;
+        text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(139, 92, 246, 0.3) !important;
+    }
     div.stButton > button {
         background: linear-gradient(90deg, #8b5cf6, #ec4899) !important;
         color: white !important;
