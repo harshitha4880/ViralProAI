@@ -1396,9 +1396,12 @@ elif page == "Spy":
             st.markdown("### ⚔️ The War Room (You vs Rival)")
             user_prof = db.get_profile()
             if user_prof is not None and not (isinstance(user_prof, pd.Series) and user_prof.empty):
+                # Use session followers if available, otherwise default to a known value or 0
+                current_followers = followers if 'followers' in locals() else 0
+                
                 comparison_data = {
                     'Metric': ['Followers', 'Avg Virality', 'Post Frequency', 'Top Format'],
-                    'You': [f"{user_prof['followers_count']:,}", "74%", "4.2/week", "Reel"],
+                    'You': [f"{current_followers:,}", f"{user_prof.get('avg_score', 74):.1f}%", "4.2/week", "Reel"],
                     'Rival': [f"{f_count:,}", f"{r.get('score', 85)}%", "5.8/week", r.get('type', 'Reel')]
                 }
                 st.table(pd.DataFrame(comparison_data))
