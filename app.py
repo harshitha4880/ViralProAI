@@ -340,10 +340,13 @@ REV_NAV_MAP = {v: k for k, v in NAV_MAP.items()}
 
 # --- SIDEBAR ---
 with st.sidebar:
+    # --- GLOBAL IDENTITY SYNC ---
+    ai_engine_name = st.session_state.get('ai_engine', 'Lumi (Gemini)').split(' ')[0]
+    
     st.image("assets/logo.png", use_container_width=True)
-    st.markdown("""
+    st.markdown(f"""
         <h1 style='text-align: center; color: #8b5cf6; margin-top: -20px; animation: pulseGlow 3s infinite;'>
-            ViralProAI
+            ViralProAI | {ai_engine_name} Powered
         </h1>
         <style>
         @keyframes pulseGlow {
@@ -394,8 +397,8 @@ with st.sidebar:
     
     st.markdown("---")
         
-    # --- GLOBAL LUMI CHAT ---
-    st.markdown("### 🐝 Ask Lumi Pro")
+    # --- GLOBAL AI CHAT ---
+    st.markdown(f"### 🐝 Ask {ai_engine_name} Pro")
     
     # Initialize history
     if 'lumi_history' not in st.session_state:
@@ -404,10 +407,11 @@ with st.sidebar:
     chat_container = st.container(height=300)
     with chat_container:
         for message in st.session_state['lumi_history']:
-            with st.chat_message(message["role"], avatar="🐝" if message["role"] == "assistant" else "👤"):
+            avatar_icon = "🤖" if "ChatGPT" in ai_engine_name else "🐝"
+            with st.chat_message(message["role"], avatar=avatar_icon if message["role"] == "assistant" else "👤"):
                 st.markdown(message["content"])
     
-    if prompt := st.chat_input("Ask Lumi anything..."):
+    if prompt := st.chat_input(f"Ask {ai_engine_name} anything..."):
         with st.chat_message("user", avatar="👤"):
             st.markdown(prompt)
         st.session_state['lumi_history'].append({"role": "user", "content": prompt})
@@ -418,8 +422,9 @@ with st.sidebar:
             'rival_data': str(st.session_state.get('watchlist', []))[:200]
         }
         
-        with st.chat_message("assistant", avatar="🐝"):
-            with st.spinner("Lumi is thinking..."):
+        avatar_icon = "🤖" if "ChatGPT" in ai_engine_name else "🐝"
+        with st.chat_message("assistant", avatar=avatar_icon):
+            with st.spinner(f"{ai_engine_name} is thinking..."):
                 response = call_lumi_llm(prompt, ctx)
                 st.markdown(response)
         st.session_state['lumi_history'].append({"role": "assistant", "content": response})
