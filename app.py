@@ -124,20 +124,23 @@ st.markdown("""
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
 
     /* TARGETED TYPOGRAPHY (NO GLOBAL OVERLAP) */
-    * :not(.stIcon):not(i):not([class*="material-icons"]) { 
+    * :not(.stIcon):not(i):not([class*="material-icons"]):not(svg) { 
         font-family: 'Inter', sans-serif !important; 
-        color: #ffffff;
     }
     
-    /* Hide broken ligatures */
-    .stIcon {
+    /* KILL THE GHOST ICONS */
+    [data-testid="stExpanderIcon"], .st-emotion-cache-p5msec {
+        display: none !important;
+        visibility: hidden !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+    
+    /* Ensure icon text stays hidden */
+    .stIcon, [data-testid="stIcon"] {
         font-family: inherit !important;
-    }
-    
-    /* Remove specific broken arrow text if it persists */
-    [data-testid="stSidebarNav"] span {
-        text-overflow: ellipsis;
-        overflow: hidden;
+        color: transparent !important;
+        user-select: none !important;
     }
     
     .stApp {
