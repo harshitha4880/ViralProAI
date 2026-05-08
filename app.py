@@ -1628,6 +1628,23 @@ elif page == "API":
 
         st.markdown("---")
         st.markdown("### 🛠️ Connection Settings")
+        
+        # Manual Override Expander
+        with st.expander("🕹️ Manual Intelligence Override (Use if Auto-Discovery Fails)"):
+            st.info("If the app cannot find your ID automatically, you can paste it here manually.")
+            manual_ig_id = st.text_input("Manual Instagram Business ID", value=api.ig_user_id if api.ig_user_id else "", placeholder="e.g. 17841401234567890")
+            if st.button("🚀 Force Override & Sync"):
+                if manual_ig_id:
+                    # Update credentials file and internal state
+                    creds_path = 'credentials.json'
+                    with open(creds_path, 'r') as f:
+                        creds = json.load(f)
+                    
+                    # Update the handler object (though we should ideally store this in credentials)
+                    api.ig_user_id = manual_ig_id
+                    st.success(f"💎 **ID Overridden!** System is now targeting ID: `{manual_ig_id}`")
+                    st.toast("Re-initializing neural link...")
+                    st.rerun()
         new_token = st.text_input("Update Instagram Access Token", type="password")
         new_app_id = st.text_input("Update Meta App ID")
         new_secret = st.text_input("Update Meta App Secret", type="password")
