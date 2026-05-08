@@ -1488,12 +1488,16 @@ elif page == "Spy":
                 for idx, media in enumerate(media_list[:4]):
                     with grid_cols[idx]:
                         m_url = media.get('media_url')
+                        t_url = media.get('thumbnail_url') # Use thumbnail for videos if possible
                         m_type = media.get('media_type')
-                        if m_url:
+                        
+                        display_url = t_url if t_url else m_url
+                        
+                        if display_url:
                             if m_type == 'VIDEO':
-                                st.video(m_url)
+                                st.image(display_url, use_container_width=True) # Show thumbnail as preview
                             else:
-                                st.image(m_url, use_container_width=True)
+                                st.image(display_url, use_container_width=True)
                         st.caption(f"❤️ {media.get('like_count', 0):,}")
             
             st.warning(f"💡 **AI Strategy Breakdown:** {r['strategy']}")

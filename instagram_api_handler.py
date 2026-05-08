@@ -60,7 +60,8 @@ class InstagramAPIHandler:
             self.get_instagram_business_account_id()
         
         if self.ig_user_id:
-            url = f"{self.base_url}{self.ig_user_id}/media?fields=id,caption,media_type,media_url,permalink,timestamp,like_count,comments_count,engagement&limit={limit}&access_token={self.access_token}"
+            # Removed 'engagement' as it's an insights field, added 'thumbnail_url' for reels
+            url = f"{self.base_url}{self.ig_user_id}/media?fields=id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count,comments_count&limit={limit}&access_token={self.access_token}"
             try:
                 return requests.get(url).json()
             except:
@@ -76,8 +77,8 @@ class InstagramAPIHandler:
             # Clean username (remove @)
             username = username.replace("@", "").strip()
             
-            # Meta Business Discovery Query (Now fetching Media for real insights!)
-            query = f"business_discovery.username({username}){{followers_count,media_count,id,username,name,media.limit(10){{id,caption,like_count,comments_count,media_type,timestamp,media_url}}}}"
+            # Meta Business Discovery Query (Added thumbnail_url for Reels)
+            query = f"business_discovery.username({username}){{followers_count,media_count,id,username,name,media.limit(10){{id,caption,like_count,comments_count,media_type,timestamp,media_url,thumbnail_url}}}}"
             url = f"{self.base_url}{self.ig_user_id}?fields={query}&access_token={self.access_token}"
             
             try:
