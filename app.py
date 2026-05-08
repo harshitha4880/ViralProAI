@@ -16,9 +16,9 @@ from recommendation_engine import RecommendationEngine
 from report_generator import ReportGenerator
 from instagram_api_handler import InstagramAPIHandler
 from caption_generator import CaptionGenerator
-from audio_matchmaker import AudioMatchmaker
 import json
 import random
+import openai
 
 # Page Configuration
 st.set_page_config(
@@ -39,60 +39,67 @@ def get_live_profile():
     return None
 
 def call_lumi_llm(user_query, context_data):
-    """Calls Gemini API for a Pro ChatGPT experience with Memory & Persona."""
+    """Calls either Gemini or ChatGPT for a Pro AI experience with Memory & Persona."""
     if 'lumi_history' not in st.session_state:
         st.session_state['lumi_history'] = []
         
     if os.path.exists('credentials.json'):
         with open('credentials.json', 'r') as f:
             creds = json.load(f)
-            api_key = creds.get('gemini_key')
             
-        if api_key:
+        # Determine engine
+        engine = st.session_state.get('ai_engine', 'Lumi (Gemini)')
+        
+        system_prompt = f"""
+        You are LUMI PRO, the world's most advanced God-Mode Viral Intelligence. 
+        Your personality is High-Energy, Bold, and Enthusiastic (like a world-class AI coding assistant).
+        You are a Partner in the user's success, always aiming for a 'Breathtaking' first impression.
+        
+        STYLE GUIDE:
+        - Use RICH Aesthetics: Bold headers, bullet points, vibrant language.
+        - Use Emojis FREQUENTLY: (🥂, 🚀, 🔥, 🕵️‍♂️, 💎, ✨, 🧠, 🎯, ⚖️, 🛰️).
+        - Use Technical Terms: 'Neural Ignition', 'Algorithm Domination', 'Portal is open'.
+        
+        CURRENT CONTEXT:
+        - Viral IQ: {context_data.get('score', 'N/A')}%
+        - Mood DNA: {context_data.get('mood', 'Neutral')}
+        - Niche Authority: {context_data.get('niche', 'General')}
+        - Rival Data Sync: {context_data.get('rival_data', 'No rivals yet')}
+        
+        MISSION:
+        Speak like a pro strategist who is 'All-In' on the user's viral empire. 
+        """
+
+        if "ChatGPT" in engine and creds.get('openai_key'):
             try:
-                genai.configure(api_key=api_key)
+                from openai import OpenAI
+                client = OpenAI(api_key=creds['openai_key'])
+                response = client.chat.completions.create(
+                    model="gpt-4o",
+                    messages=[
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_query}
+                    ]
+                )
+                return response.choices[0].message.content
+            except Exception as e:
+                return f"⚠️ ChatGPT Neural Error: {str(e)}"
+        
+        elif creds.get('gemini_key'):
+            try:
+                genai.configure(api_key=creds['gemini_key'])
                 model = genai.GenerativeModel('gemini-1.5-flash')
-                
-                # Build context-rich prompt with memory
                 history_text = "\n".join([f"{m['role']}: {m['content']}" for m in st.session_state['lumi_history'][-5:]])
-                
-                system_prompt = f"""
-                You are LUMI PRO, the world's most advanced God-Mode Viral Intelligence. 
-                Your personality is High-Energy, Bold, and Enthusiastic (like a world-class AI coding assistant).
-                You are a Partner in the user's success, always aiming for a 'Breathtaking' first impression.
-                
-                STYLE GUIDE:
-                - Use RICH Aesthetics in your text: Bold headers, bullet points, and vibrant language.
-                - Use Emojis FREQUENTLY: (🥂, 🚀, 🔥, 🕵️‍♂️, 💎, ✨, 🧠, 🎯, ⚖️, 🛰️).
-                - Use Technical/Futuristic Terms: 'Neural Ignition', 'Algorithm Domination', 'Portal is open', 'Neural Heart'.
-                - Be PROACTIVE: If they ask a question, give a deep, insightful strategy and end with a high-energy 'God-Mode' sign-off.
-                
-                CURRENT CONTEXT:
-                - Viral IQ: {context_data.get('score', 'N/A')}%
-                - Mood DNA: {context_data.get('mood', 'Neutral')}
-                - Niche Authority: {context_data.get('niche', 'General')}
-                - Rival Data Sync: {context_data.get('rival_data', 'No rivals yet')}
-                
-                CONVERSATION HISTORY:
-                {history_text}
-                
-                MISSION:
-                Speak like a pro strategist who is 'All-In' on the user's viral empire. 
-                Avoid generic advice. Give them a 'Breathtaking' response every single time!
-                """
-                
-                response = model.generate_content(f"{system_prompt}\n\nUser Question: {user_query}")
+                response = model.generate_content(f"{system_prompt}\n\nHistory: {history_text}\n\nUser Question: {user_query}")
                 return response.text
             except Exception as e:
-                return f"⚠️ Lumi Brain Error: {str(e)}"
+                return f"⚠️ Gemini Neural Error: {str(e)}"
     
-    # Fallback Expert Logic (God-Mode Edition)
+    # Fallback Expert Logic
     query_lower = user_query.lower()
     if "hi" in query_lower or "hello" in query_lower:
-        return f"### 🏆 WELCOME TO THE EMPIRE! 🥂🚀🔥\n\nI've just performed a **Neural Sync** with your profile. Your latest **{context_data.get('mood', 'content')}** DNA is looking absolutely world-class! 🧠💎✨\n\nReady to dominate the **{context_data.get('niche', 'Instagram')}** algorithm today? I've got a **'Breathtaking'** viral hook ready for you—want to see it? 🎯🛰️"
-    if "caption" in query_lower:
-        return "### ✍️ AI-OPTIMIZED VIRAL COPY INCOMING! 🥂🚀🔥\n\nI've got you! 🧠 Based on your current mood DNA, I'm recommending a **'POV' style hook** to trigger massive engagement velocity. 🎯\n\n**Lumi's Pro Tip:** Add a quick zoom in the first 0.5s to lock in your viewer's attention! Want me to generate the full script? 💎✨"
-    return f"### 🎯 NEURAL STRATEGY INSIGHT! 🥂🚀🔥\n\nGreat question! For this **{context_data.get('mood', 'Neutral')}** post, my data suggests performing a **Total Visual Audit** to boost your reach by **+25%**. 🧠💎\n\n**Action Plan:** Try a quick zoom or a high-energy transition to trigger the algorithm! 🥂🚀✨"
+        return f"### 🏆 WELCOME TO THE EMPIRE! 🥂🚀🔥\n\nI'm ready to dominate! 🧠💎✨"
+    return f"### 🎯 NEURAL STRATEGY INSIGHT! 🥂🚀🔥\n\n(Fallback Mode) Try focusing on visual energy! 🥂🚀✨"
 
 @st.cache_data(ttl=1800) # Cache media for 30 minutes
 def get_live_media():
@@ -1435,6 +1442,9 @@ elif page == "API":
         new_app_id = st.text_input("Update Meta App ID")
         new_secret = st.text_input("Update Meta App Secret", type="password")
         new_gemini_key = st.text_input("Update Lumi AI (Gemini) Key", type="password", help="Get a free key from makersuite.google.com")
+        new_openai_key = st.text_input("Update ChatGPT (OpenAI) Key", type="password")
+        
+        st.session_state['ai_engine'] = st.selectbox("Preferred AI Engine", ["Lumi (Gemini)", "ChatGPT (GPT-4o)"])
         
         if st.button("💾 Save & Reconnect"):
             if new_token and new_app_id and new_secret:
@@ -1445,6 +1455,8 @@ elif page == "API":
                 }
                 if new_gemini_key:
                     creds["gemini_key"] = new_gemini_key
+                if new_openai_key:
+                    creds["openai_key"] = new_openai_key
                     
                 with open('credentials.json', 'w') as f:
                     json.dump(creds, f)
