@@ -1602,17 +1602,28 @@ elif page == "API":
                 st.toast("Fetching latest stats...")
                 st.rerun()
         else:
-            st.warning("⚠️ **Connection Alert:** No active Instagram Business link found.")
-            if api.last_error:
-                st.error(f"🛰️ **Meta API Feedback:** \n\n`{api.last_error}`")
-                st.markdown("""
-                **Common Root Causes:**
-                1. **No Business Account**: Ensure your IG account is linked to a FB Page.
-                2. **Permissions**: Did you check `instagram_basic` in the Meta Explorer?
-                3. **Account ID**: Discovery failed because this token has no linked Business IDs.
-                """)
-            else:
-                st.write("Please ensure `credentials.json` is present and your token is a 'Long-Lived' Business Token.")
+            st.warning("⚠️ **Connection Alert:** Token detected, but no Instagram Business link found.")
+            
+            # --- DEBUG: RAW META FEED ---
+            with st.expander("🔍 Debug: Raw Meta Discovery Intel"):
+                st.write("If the lists below are empty `[]`, your account isn't linked to a FB Page.")
+                
+                # Fetch fresh me/accounts
+                url_acc = f"{api.base_url}me/accounts?access_token={api.access_token}"
+                raw_acc = requests.get(url_acc).json()
+                st.write("**Facebook Pages Found:**", raw_acc.get('data', []))
+                
+                if api.last_error:
+                    st.error(f"🛰️ **Meta API Feedback:** `{api.last_error}`")
+
+            st.markdown("""
+            ### 🛠️ How to Fix This:
+            1. **Link your IG to a FB Page**: Go to **Instagram Settings -> Accounts Center -> Connected Experiences**.
+            2. **Convert to Professional**: Ensure your IG is set to **Business** or **Creator**.
+            3. **Meta Business Suite**: Check [business.facebook.com](https://business.facebook.com) to confirm the link is active.
+            
+            *Once linked, refresh this page and the 'Rival Spy' will ignite!*
+            """)
 
         st.markdown("---")
         st.markdown("### 🛠️ Connection Settings")
