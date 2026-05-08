@@ -16,6 +16,7 @@ from recommendation_engine import RecommendationEngine
 from report_generator import ReportGenerator
 from instagram_api_handler import InstagramAPIHandler
 from caption_generator import CaptionGenerator
+from audio_matchmaker import AudioMatchmaker
 import json
 import random
 import openai
