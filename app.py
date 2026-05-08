@@ -23,7 +23,7 @@ from groq import Groq
 
 # Page Configuration
 st.set_page_config(
-    page_title="ViralProAI | Groq-Powered Analytics",
+    page_title="ViralProAI | Elite AI Analytics",
     page_icon="🚀",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -366,7 +366,7 @@ with st.sidebar:
     st.image("assets/logo.png", use_container_width=True)
     st.markdown(f"""
         <h1 style='text-align: center; color: #8b5cf6; margin-top: -20px; animation: pulseGlow 3s infinite;'>
-            ViralProAI | {ai_engine_name} Powered
+            ViralProAI | AI Powered
         </h1>
         <style>
         @keyframes pulseGlow {{
