@@ -1643,8 +1643,9 @@ elif page == "API":
                     with open(creds_path, 'r') as f:
                         creds = json.load(f)
                     
-                    # Update the handler object (though we should ideally store this in credentials)
+                    # Update the handler object and persist
                     api.ig_user_id = manual_ig_id
+                    api.save_cache()
                     st.success(f"💎 **ID Overridden!** System is now targeting ID: `{manual_ig_id}`")
                     st.toast("Re-initializing neural link...")
                     st.rerun()

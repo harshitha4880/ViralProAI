@@ -3,17 +3,41 @@ import json
 import os
 
 class InstagramAPIHandler:
-    def __init__(self, credentials_path='credentials.json'):
+    def __init__(self, credentials_path='credentials.json', cache_path='id_cache.json'):
         with open(credentials_path, 'r') as f:
             self.creds = json.load(f)
+        self.cache_path = cache_path
         self.base_url = "https://graph.facebook.com/v20.0/"
         self.access_token = self.creds['access_token']
         self.ig_user_id = None 
         self.facebook_page_id = None
-        self.last_error = None # Track the latest API error
+        self.last_error = None 
+
+        # Try loading from cache first
+        self.load_cache()
         
-        # Auto-discover on init to ensure 'Spy' works immediately
-        self.discover_ids()
+        # If cache is empty or we hit an error, attempt discovery
+        if not self.ig_user_id:
+            self.discover_ids()
+
+    def load_cache(self):
+        """Loads IDs from local cache to avoid API rate limits."""
+        if os.path.exists(self.cache_path):
+            try:
+                with open(self.cache_path, 'r') as f:
+                    cache = json.load(f)
+                self.ig_user_id = cache.get('ig_user_id')
+                self.facebook_page_id = cache.get('facebook_page_id')
+            except:
+                pass
+
+    def save_cache(self):
+        """Saves discovered IDs to local cache."""
+        with open(self.cache_path, 'w') as f:
+            json.dump({
+                'ig_user_id': self.ig_user_id,
+                'facebook_page_id': self.facebook_page_id
+            }, f)
 
     def discover_ids(self):
         """Automatically finds the Page and IG ID for the current token by scanning all pages."""
@@ -42,6 +66,7 @@ class InstagramAPIHandler:
                     if 'instagram_business_account' in res_ig:
                         self.facebook_page_id = page_id
                         self.ig_user_id = res_ig['instagram_business_account']['id']
+                        self.save_cache() # Persist for future sessions
                         return # Success! Exit early
             
             self.last_error = "None of your Facebook Pages are linked to an Instagram Business account."
