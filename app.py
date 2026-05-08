@@ -244,57 +244,31 @@ st.markdown("""
         font-weight: 800;
         text-transform: uppercase;
     }
-    </style>
-""", unsafe_allow_html=True)
 
     /* Virality Score Badge */
     .virality-score-big {
-        font-size: 5rem;
-        font-weight: 900;
+        font-size: 6rem !important;
+        font-weight: 900 !important;
         text-align: center;
-        margin: 20px 0;
+        margin: 30px 0;
         background: linear-gradient(45deg, #ec4899, #8b5cf6, #3b82f6);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        text-shadow: 0 0 30px rgba(139, 92, 246, 0.3);
-    }
-
-    /* Custom Buttons */
-    .stButton>button {
-        background: linear-gradient(45deg, #8b5cf6, #ec4899);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        padding: 10px 25px;
-        font-weight: 600;
-        transition: all 0.3s;
-    }
-    .stButton>button:hover {
-        box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
-        transform: scale(1.02);
+        text-shadow: 0 0 30px rgba(139, 92, 246, 0.4);
     }
 
     /* Mobile Responsiveness */
     @media (max-width: 768px) {
-        .glass-card {
-            padding: 15px;
-            margin-bottom: 15px;
-        }
-        .virality-score-big {
-            font-size: 5rem;
-        }
-        h1 {
-            font-size: 2.2rem !important;
-        }
+        .glass-card { padding: 15px; }
+        .virality-score-big { font-size: 4rem !important; }
+        h1 { font-size: 2rem !important; }
     }
 
-    /* App Status Bar Feel */
-    .stApp {
-        border-top: 4px solid #8b5cf6;
-    }
-    
     /* Sidebar Styling */
-    .css-1d391kg { background: rgba(15, 23, 42, 0.95); }
+    section[data-testid="stSidebar"] {
+        background: rgba(15, 23, 42, 0.98) !important;
+        border-right: 1px solid rgba(255,255,255,0.1);
+    }
     
     /* Progress Bars */
     .stProgress > div > div > div > div {
