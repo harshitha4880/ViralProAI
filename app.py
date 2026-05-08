@@ -115,8 +115,19 @@ def call_lumi_llm(user_query, context_data):
             except Exception as e:
                 return f"⚠️ Gemini Neural Error: {str(e)}"
     
-    # Fallback Expert Logic
-    return "### 🎯 NEURAL FALLBACK ACTIVE! 🥂🚀🔥\n\nI'm in standby mode. Please verify your API keys in Settings! 🧠💎✨"
+    # Fallback Expert Logic (Diagnostic Mode)
+    status = []
+    if creds.get('gemini_key'): status.append("🟢 Lumi (Gemini) - ARMED")
+    else: status.append("🔴 Lumi (Gemini) - STANDBY")
+    
+    if creds.get('openai_key'): status.append("🟢 ChatGPT (OpenAI) - ARMED")
+    else: status.append("🔴 ChatGPT (OpenAI) - STANDBY")
+    
+    if creds.get('groq_key'): status.append("🟢 Groq (Llama 3) - ARMED")
+    else: status.append("🔴 Groq (Llama 3) - STANDBY")
+    
+    status_str = "\n".join(status)
+    return f"### 🎯 NEURAL SYSTEM STATUS! 🥂🚀🔥\n\nI'm currently in standby mode. To ignite my brain, please add a key in **Settings**:\n\n{status_str}\n\n**Tip:** Groq is 100% free and blazingly fast! 🧠💎✨"
 
 @st.cache_data(ttl=1800) # Cache media for 30 minutes
 def get_live_media():
