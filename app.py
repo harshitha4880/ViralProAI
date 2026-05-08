@@ -1399,9 +1399,13 @@ elif page == "Spy":
                 # Use session followers if available, otherwise default to a known value or 0
                 current_followers = followers if 'followers' in locals() else 0
                 
+                # Ensure avg_score is a number for formatting
+                u_avg_score = user_prof.get('avg_score')
+                if u_avg_score is None: u_avg_score = 74.0
+                
                 comparison_data = {
                     'Metric': ['Followers', 'Avg Virality', 'Post Frequency', 'Top Format'],
-                    'You': [f"{current_followers:,}", f"{user_prof.get('avg_score', 74):.1f}%", "4.2/week", "Reel"],
+                    'You': [f"{current_followers:,}", f"{float(u_avg_score):.1f}%", "4.2/week", "Reel"],
                     'Rival': [f"{f_count:,}", f"{r.get('score', 85)}%", "5.8/week", r.get('type', 'Reel')]
                 }
                 st.table(pd.DataFrame(comparison_data))
