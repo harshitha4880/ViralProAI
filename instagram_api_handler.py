@@ -8,8 +8,19 @@ class InstagramAPIHandler:
             self.creds = json.load(f)
         self.base_url = "https://graph.facebook.com/v20.0/"
         self.access_token = self.creds['access_token']
-        self.ig_user_id = "17841466384387020" # YOUR REAL INSTAGRAM ID! 🎯
-        self.facebook_page_id = "61588881313402"
+        self.ig_user_id = None 
+        self.facebook_page_id = None
+        
+        # Auto-discover on init to ensure 'Spy' works immediately
+        self.discover_ids()
+
+    def discover_ids(self):
+        """Automatically finds the Page and IG ID for the current token."""
+        try:
+            self.get_facebook_page_id()
+            self.get_instagram_business_account_id()
+        except:
+            pass
 
     def get_facebook_page_id(self):
         """Fetches the Facebook Page ID linked to the account."""
@@ -18,10 +29,7 @@ class InstagramAPIHandler:
         if 'data' in response and len(response['data']) > 0:
             self.facebook_page_id = response['data'][0]['id']
             return self.facebook_page_id
-        
-        # Fallback to the ID we manually found if discovery fails
-        self.facebook_page_id = "61588881313402"
-        return self.facebook_page_id
+        return None
 
     def get_instagram_business_account_id(self):
         """Fetches the Instagram Business Account ID linked to the Facebook Page."""

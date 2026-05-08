@@ -1560,7 +1560,12 @@ elif page == "API":
                     health = api.get_profile_info()
                     if health and 'username' in health:
                         st.success(f"💎 **Token is HEALTHY!** Connected as @{health['username']}")
-                        st.info(f"📊 **Permissions Check:** Your account is successfully linked as a {u_niche} Business/Creator profile.")
+                        
+                        # Display Discovered IDs for verification
+                        with st.status("📡 Live Neural Link Established", expanded=True):
+                            st.write(f"**Linked IG ID:** `{api.ig_user_id}`")
+                            st.write(f"**Linked FB Page ID:** `{api.facebook_page_id}`")
+                            st.info("📊 **Permissions Check:** Your account is successfully linked and 'Business Discovery' is active.")
                     else:
                         st.error("❌ **Token ERROR:** Your token has either expired or lacks 'Business Discovery' permissions.")
                         st.markdown("""
