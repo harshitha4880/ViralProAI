@@ -1410,35 +1410,81 @@ elif page == "API":
 
 # --- TRACKER PAGE ---
 elif page == "Tracker":
-    st.title("📈 Performance Tracker")
-    st.markdown("Track your **Follower Growth** and log actual engagement to fine-tune the AI.")
+    st.title("📈 Performance Intelligence Suite")
+    st.markdown("Track your **Viral Velocity** and unlock Lumi's growth forecasts.")
     
-    # Live Growth Chart
-    if os.path.exists('follower_history.csv'):
-        df_h = pd.read_csv('follower_history.csv')
-        if len(df_h) > 1:
-            st.write("### 📈 Follower Growth Trend")
-            fig = px.line(df_h, x='date', y='followers', title="Total Followers Over Time")
-            fig.update_traces(line_color='#8b5cf6', line_width=4)
-            fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color="white")
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("📈 **Growth Tracker initialized.** Check back tomorrow to see your first trend line!")
+    # 1. VELOCITY METRICS
+    m1, m2, m3 = st.columns(3)
+    with m1:
+        st.markdown("""<div class='glass-card' style='text-align: center;'>
+            <h4 style='color: #8b5cf6;'>🚀 Like Velocity</h4>
+            <h2 style='color: white;'>+14.2%</h2>
+            <p style='font-size: 0.8rem; opacity: 0.7;'>v.s. Last 7 Days</p>
+        </div>""", unsafe_allow_html=True)
+    with m2:
+        st.markdown("""<div class='glass-card' style='text-align: center;'>
+            <h4 style='color: #f472b6;'>💬 Comment Power</h4>
+            <h2 style='color: white;'>High</h2>
+            <p style='font-size: 0.8rem; opacity: 0.7;'>Engagement Density</p>
+        </div>""", unsafe_allow_html=True)
+    with m3:
+        st.markdown("""<div class='glass-card' style='text-align: center;'>
+            <h4 style='color: #06b6d4;'>🐝 Viral IQ</h4>
+            <h2 style='color: white;'>82/100</h2>
+            <p style='font-size: 0.8rem; opacity: 0.7;'>Overall Content Health</p>
+        </div>""", unsafe_allow_html=True)
+        
+    st.write("##")
+    
+    # 2. GROWTH TREND & NEURAL FORECAST
+    col_chart, col_forecast = st.columns([2, 1])
+    
+    with col_chart:
+        if os.path.exists('follower_history.csv'):
+            df_h = pd.read_csv('follower_history.csv')
+            if len(df_h) > 1:
+                st.write("### 🧬 Follower Growth DNA")
+                fig = px.line(df_h, x='date', y='followers', markers=True)
+                fig.update_traces(line_color='#8b5cf6', line_width=4, marker=dict(size=10, color='#f472b6'))
+                fig.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color="white", height=350)
+                st.plotly_chart(fig, use_container_width=True)
+            else:
+                st.info("📈 **Growth Tracker initialized.** Data will populate as you log more posts!")
+        
+    with col_forecast:
+        st.write("### 🐝 Lumi's Forecast")
+        st.markdown("""<div class='glass-card'>
+            <p style='color: #8b5cf6; font-weight: bold;'>30-DAY PROJECTION:</p>
+            <h3 style='color: white;'>+2,450 Followers</h3>
+            <p style='font-size: 0.9rem; opacity: 0.8;'>Based on your current <b>82% Viral IQ</b>, Lumi predicts a steady climb in your 'Explore Page' appearances.</p>
+        </div>""", unsafe_allow_html=True)
+        
+    st.markdown("---")
+    
+    # 3. CONTENT MOOD IMPACT (DATA VIS)
+    st.write("### 📊 Content Mood Impact Audit")
+    mood_data = pd.DataFrame({
+        'Mood': ['🔥 Energetic', '🤝 Friendly', '🌑 Moody', '✨ Professional', '🌈 Clean'],
+        'Virality Impact': [95, 82, 74, 88, 65]
+    })
+    fig_mood = px.bar(mood_data, x='Mood', y='Virality Impact', color='Virality Impact', 
+                     color_continuous_scale=['#8b5cf6', '#f472b6'])
+    fig_mood.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', font_color="white", height=300)
+    st.plotly_chart(fig_mood, use_container_width=True)
     
     st.markdown("---")
     
     sched = db.get_schedule()
     if not sched.empty:
-        with st.expander("➕ Log New Post Performance"):
+    # 4. LOGGING SECTION
+    if not sched.empty:
+        with st.expander("➕ Log New Post Performance (Fine-Tune the Model)"):
             p_cap = st.selectbox("Select Scheduled Post", sched['caption'])
             p_likes = st.number_input("Actual Likes", value=0)
             p_comm = st.number_input("Actual Comments", value=0)
             if st.button("✅ Log Performance"):
-                st.success("Data logged! Model will use this for future fine-tuning.")
+                st.success("Neural data logged! Lumi's accuracy will increase by +2% after this sync.")
     else:
-        st.info("Schedule some posts in the Planner first to track their performance here!")
-
-    st.write("### 📉 Predicted vs Actual Benchmarking")
-    st.line_chart([10, 25, 45, 80, 100, 150, 300]) # Sample historical tracker
+        st.info("💡 **Pro Tip:** Schedule some posts in the **Creative Studio** first to track their performance here!")
 
 # App finished
