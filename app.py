@@ -156,42 +156,42 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* Glassmorphism Cards with Glow (SPACIOUS) */
+    /* Glassmorphism Cards with Glow (BALANCED) */
     .glass-card {
         background: rgba(255, 255, 255, 0.07);
         backdrop-filter: blur(20px);
-        border-radius: 32px;
-        padding: 45px; /* Increased Padding */
+        border-radius: 28px;
+        padding: 35px; /* Balanced Padding */
         border: 1px solid rgba(255, 255, 255, 0.15);
-        margin-bottom: 40px; /* Increased Margin */
+        margin-bottom: 30px;
         box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.8);
         transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         font-weight: 600 !important;
     }
     
     .glass-card:hover {
-        transform: translateY(-12px) scale(1.01);
+        transform: translateY(-8px) scale(1.01);
         border: 1px solid rgba(139, 92, 246, 0.5);
-        box-shadow: 0 20px 60px rgba(139, 92, 246, 0.25);
+        box-shadow: 0 15px 50px rgba(139, 92, 246, 0.25);
     }
 
     h1, h2, h3, h4, h5, h6 {
         color: #ffffff !important;
         font-weight: 900 !important;
-        letter-spacing: -1.5px;
-        margin-bottom: 25px !important;
+        letter-spacing: -1.2px;
+        margin-bottom: 20px !important;
         text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(139, 92, 246, 0.3) !important;
     }
 
     .stMarkdown p, .stMarkdown li {
-        font-size: 1.15rem !important;
-        line-height: 1.9 !important; /* Airy spacing */
-        letter-spacing: 0.02em;
+        font-size: 1.12rem !important;
+        line-height: 1.85 !important;
+        letter-spacing: 0.01em;
         text-align: justify !important;
         text-justify: inter-word !important;
         color: #f8fafc !important;
-        max-width: 900px; /* Prevent eye fatigue */
-        margin: 0 auto 20px auto !important;
+        width: 100% !important; /* Fill the box */
+        margin-bottom: 15px !important;
     }
 
     /* Metrics High Visibility */
