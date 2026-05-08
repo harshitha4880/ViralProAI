@@ -1411,8 +1411,8 @@ elif page == "Spy":
                 st.table(pd.DataFrame(comparison_data))
                 
                 # Gap Analysis Insight
-                if f_count > user_prof['followers_count']:
-                    st.info(f"🚩 **The Gap:** {r['user']} has {f_count - user_prof['followers_count']:,} more followers. Our data suggests they dominate the 'Late Night' posting window which you are currently missing!")
+                if f_count > current_followers:
+                    st.info(f"🚩 **The Gap:** {r['user']} has {f_count - current_followers:,} more followers. Our data suggests they dominate the 'Late Night' posting window which you are currently missing!")
             
             st.write("##")
             heist_col1, heist_col2 = st.columns(2)
