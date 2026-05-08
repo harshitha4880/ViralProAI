@@ -559,17 +559,7 @@ if page == "Home":
     
     st.write("##")
     
-    st.markdown("### 🚨 Algorithm Trend Radar")
-    t1, t2, t3 = st.columns(3)
-    with t1:
-        st.write("🔥 **Rising Niche:**")
-        st.info("Minimalist Lifestyle")
-    with t2:
-        st.write("🎵 **Audio Vibe:**")
-        st.info("Upbeat Lo-Fi")
-    with t3:
-        st.write("📉 **Saturation Alert:**")
-        st.warning("Dance Trends")
+    st.write("##")
     
     st.write("##")
     
