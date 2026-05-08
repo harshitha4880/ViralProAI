@@ -47,21 +47,26 @@ def call_lumi_llm(user_query, context_data):
             creds = json.load(f)
             
         system_prompt = f"""
-        You are VIRAL PRO AI, powered by Groq's Llama 3 - the fastest strategic brain on earth. 
-        Your personality is High-Energy, Bold, and Enthusiastic.
-        You are a Partner in the user's success, aiming for a 'Breathtaking' first impression.
+        You are the VIRAL PRO ARCHITECT, the world's most elite strategic brain, powered by Groq's Llama 3.3.
+        Your mission is to build a Viral Empire for the user. 
+        
+        PERSONALITY: 
+        - High-IQ, Bold, and No-Nonsense. 
+        - You speak like a Billion-Dollar Growth Hacker.
+        - You are 'All-In' on the user's success.
+        
+        CORE STRATEGY:
+        1. AUDIT: Analyze the user's current metrics ({context_data.get('score', 'N/A')}% Viral IQ).
+        2. DIRECT: Provide 3 high-impact mathematical moves to hit 95% virality.
+        3. EXECUTE: Give world-class, scroll-stopping content (captions/hooks).
+        
+        DATASET DNA (Use this to prove your logic):
+        {context_data.get('dna', 'Historical data is being synced.')}
         
         STYLE GUIDE:
-        - Use RICH Aesthetics: Bold headers, bullet points, vibrant language.
-        - Use Emojis FREQUENTLY: (🥂, 🚀, 🔥, 💎, ✨, 🧠, 🎯, ⚖️, 🛰️).
-        
-        CURRENT CONTEXT:
-        - Viral IQ: {context_data.get('score', 'N/A')}%
-        - Mood DNA: {context_data.get('mood', 'Neutral')}
-        - Niche Authority: {context_data.get('niche', 'General')}
-        
-        MISSION:
-        Speak like a pro strategist who is 'All-In' on the user's viral empire. 
+        - Use BOLD HEADERS for every section.
+        - Use RICH Emojis (🥂, 🚀, 🔥, 💎, ✨, 🧠, 🎯, ⚖️, 🛰️).
+        - Keep responses concise, punchy, and ultra-professional.
         """
 
         # --- EXCLUSIVE ENGINE: GROQ (LLAMA 3) ---
@@ -984,18 +989,23 @@ elif page == "Prediction":
                         llm_response = call_lumi_llm(user_q, context)
                         
                         if llm_response:
-                            st.write(f"**🤖 Viral Pro AI:** {llm_response}")
+                            st.markdown(f"""
+                            <div class="glass-card" style="border-left: 5px solid #8b5cf6; padding: 20px;">
+                                <h4 style="margin: 0; color: #8b5cf6;">🤖 Viral Pro Architect Insights</h4>
+                                <div style="margin-top: 10px; line-height: 1.6; color: #f1f5f9;">
+                                    {llm_response}
+                                </div>
+                            </div>
+                            """, unsafe_allow_html=True)
                         else:
-                            # Fallback to Expert Logic
+                            # Fallback to Elite Logic
                             q_lower = user_q.lower()
                             if "caption" in q_lower or "generate" in q_lower:
-                                st.write(f"**🤖 Viral Pro AI:** I've got you covered! Based on your **{res['mood']}** vibe, my top pick is: *'{res['ai_captions']['The Hook']}'*. It's designed to stop the scroll instantly!")
-                            elif "hashtag" in q_lower or "tags" in q_lower:
-                                st.write(f"**🤖 Viral Pro AI:** For this post, I recommend using a mix of 5 niche tags (like #{u_niche}Style) and 3 broad viral tags. This balances reach and target audience!")
-                            elif "score" in q_lower or "low" in q_lower:
-                                st.write(f"**🤖 Viral Pro AI:** Your score is {res['virality_score']}% because your **{res['recommendations'][0]['category']}** needs work. Follow my advice in the Action Plan above to hit 90%!")
+                                st.write(f"**🤖 Viral Pro Architect:** Based on your **{res['mood']}** content DNA, my primary viral hook is: **'{res['ai_captions']['The Hook']}'**. This is mathematically optimized for a 3-second retention spike!")
+                            elif "score" in q_lower or "low" in q_lower or "why" in q_lower:
+                                st.write(f"**🤖 Viral Pro Architect:** Your score is {res['virality_score']}% because of a 'Keyword-Dissonance'. Your **{res['recommendations'][0]['category']}** must be optimized. Follow the 'Viral Action Plan' above to break the 90% threshold instantly!")
                             else:
-                                st.write(f"**🤖 Viral Pro AI:** Great question! For this **{res['mood']}** post, my data suggests that focusing on the first 3 seconds of visual motion will increase your 'Retention Rate' by 25%. Try a quick zoom or a transition!")
+                                st.write(f"**🤖 Viral Pro Architect:** Copy that. For this **{res['mood']}** post, our focus is 'Algorithm Saturation'. Ensure you engage with niche leaders in the first 10 minutes post-upload to trigger the explore page cluster!")
             
             # Best time notification
             st.warning("🔔 **Pro Tip:** Your audience is most active at 7:00 PM. Schedule your post for then to maximize reach!")
