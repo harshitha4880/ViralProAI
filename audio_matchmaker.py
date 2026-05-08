@@ -50,7 +50,7 @@ class AudioMatchmaker:
         return 'calm'
 
     def calculate_match_score(self, audio, target_cat, target_mood, target_dur):
-        """Calculates the 0-100 match score."""
+        """Calculates the 0-100 match score with a Variety Pulse."""
         cat_match = 1.0 if audio['category'] == target_cat else 0.0
         mood_match = 1.0 if audio['mood'] == target_mood else 0.0
         
@@ -60,11 +60,15 @@ class AudioMatchmaker:
         
         norm_trend = audio['trend_score'] / 100.0
         
-        score = (0.4 * cat_match) + (0.3 * mood_match) + (0.2 * dur_match) + (0.1 * norm_trend)
+        # --- NEW: VARIETY PULSE (RANDOM NOISE) ---
+        # Adds 0-5% variation to prevent repeating the same songs
+        noise = np.random.uniform(0, 0.05)
+        
+        score = (0.35 * cat_match) + (0.3 * mood_match) + (0.2 * dur_match) + (0.1 * norm_trend) + noise
         return round(score * 100, 1)
 
     def recommend_trending_audio(self, caption, niche, tone, duration):
-        """Main recommendation engine."""
+        """Main recommendation engine with Diversity Shuffling."""
         target_cat = self.detect_content_category(caption, niche)
         target_mood = self.detect_mood(caption, tone)
         
@@ -77,8 +81,12 @@ class AudioMatchmaker:
             axis=1
         )
         
-        # Sort and return top 5
-        recommendations = self.dataset.sort_values(by='match_score', ascending=False).head(5)
+        # Sort and take top 10 (more variety)
+        top_pool = self.dataset.sort_values(by='match_score', ascending=False).head(10)
+        
+        # Randomly sample 5 from the top 10 for diversity
+        recommendations = top_pool.sample(min(5, len(top_pool)))
+        recommendations = recommendations.sort_values(by='match_score', ascending=False)
         
         results = []
         for _, row in recommendations.iterrows():
