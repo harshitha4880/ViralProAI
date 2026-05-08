@@ -375,15 +375,12 @@ with st.sidebar:
 
     st.markdown("---")
     
-    # --- MULTI-PROFILE COMMAND CENTER ---
-    with st.sidebar:
-        
         page = st.selectbox("Navigate", ["Home", "Dataset Insights", "Prediction", "Studio", "Spy", "API"])
         active_prof = st.selectbox("Switch Account", ["_.harsheeyzzz._ (Personal)", "ViralPro_Biz (Business)", "+ Add Account"])
         if active_prof == "+ Add Account":
             st.info("💡 Link a new Instagram account in the 'API Connections' tab.")
         
-            st.markdown("---")
+        st.markdown("---")
         
         # --- GLOBAL LUMI CHAT ---
         st.markdown("### 🐝 Ask Lumi Pro")
@@ -1527,8 +1524,8 @@ elif page == "Tracker":
     
     st.markdown("---")
     
-    sched = db.get_schedule()
     # 4. LOGGING SECTION
+    sched = db.get_schedule()
     if not sched.empty:
         with st.expander("➕ Log New Post Performance (Fine-Tune the Model)"):
             p_cap = st.selectbox("Select Scheduled Post", sched['caption'])
