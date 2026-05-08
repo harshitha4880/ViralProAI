@@ -129,25 +129,52 @@ st.markdown("""
 
     * { font-family: 'Inter', sans-serif; }
 
-    /* Main Background */
+    /* Main Background with Liquid Shift */
     .stApp {
-        background: radial-gradient(circle at top right, #1e1b4b, #0f172a);
+        background: linear-gradient(-45deg, #0f172a, #1e1b4b, #312e81, #1e1b4b);
+        background-size: 400% 400%;
+        animation: gradientShift 15s ease infinite;
         color: #f8fafc;
     }
 
-    /* Glassmorphism Cards */
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    /* Glassmorphism Cards with Glow */
     .glass-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(12px);
+        border-radius: 24px;
         padding: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.08);
         margin-bottom: 20px;
-        transition: transform 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     }
     .glass-card:hover {
-        transform: translateY(-5px);
-        border: 1px solid rgba(139, 92, 246, 0.3);
+        transform: translateY(-8px) scale(1.02);
+        border: 1px solid rgba(139, 92, 246, 0.5);
+        box-shadow: 0 10px 40px rgba(139, 92, 246, 0.2);
+    }
+
+    /* Custom Button Glow */
+    div.stButton > button {
+        background: linear-gradient(90deg, #8b5cf6, #ec4899) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        border: none !important;
+        padding: 10px 25px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+        box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3) !important;
+    }
+    div.stButton > button:hover {
+        transform: scale(1.05) !important;
+        box-shadow: 0 6px 25px rgba(139, 92, 246, 0.5) !important;
+        background: linear-gradient(90deg, #ec4899, #8b5cf6) !important;
     }
 
     /* Metric Cards */
@@ -249,6 +276,22 @@ def quality_badge(score):
     if score >= 50: return "🟡 Medium"
     return "🔴 Low"
 
+def render_score_ring(score):
+    """Renders a custom holographic circular progress bar."""
+    color = "#8b5cf6" if score > 70 else ("#f472b6" if score > 50 else "#06b6d4")
+    st.markdown(f"""
+        <div style="display: flex; justify-content: center; align-items: center; margin: 20px 0;">
+            <svg width="220" height="220" viewBox="0 0 220 220">
+                <circle cx="110" cy="110" r="90" stroke="rgba(255,255,255,0.05)" stroke-width="15" fill="none" />
+                <circle cx="110" cy="110" r="90" stroke="{color}" stroke-width="15" fill="none" 
+                    stroke-dasharray="565.48" stroke-dashoffset="{565.48 * (1 - score/100)}" 
+                    stroke-linecap="round" style="transition: stroke-dashoffset 1.5s ease-in-out; filter: drop-shadow(0 0 10px {color});" />
+                <text x="110" y="115" text-anchor="middle" font-size="45" font-weight="800" fill="white" font-family="Inter">{score}%</text>
+                <text x="110" y="145" text-anchor="middle" font-size="12" font-weight="400" fill="rgba(255,255,255,0.6)" font-family="Inter">VIRAL PROBABILITY</text>
+            </svg>
+        </div>
+    """, unsafe_allow_html=True)
+
 # --- LOAD DATA & MODEL ---
 def get_resources():
     extractor = FeatureExtractor()
@@ -286,7 +329,18 @@ REV_NAV_MAP = {v: k for k, v in NAV_MAP.items()}
 # --- SIDEBAR ---
 with st.sidebar:
     st.image("assets/logo.png", use_container_width=True)
-    st.markdown("<h1 style='text-align: center; color: #8b5cf6; margin-top: -20px;'>ViralProAI</h1>", unsafe_allow_html=True)
+    st.markdown("""
+        <h1 style='text-align: center; color: #8b5cf6; margin-top: -20px; animation: pulseGlow 3s infinite;'>
+            ViralProAI
+        </h1>
+        <style>
+        @keyframes pulseGlow {
+            0% { text-shadow: 0 0 10px rgba(139, 92, 246, 0.2); transform: scale(1); }
+            50% { text-shadow: 0 0 25px rgba(139, 92, 246, 0.6); transform: scale(1.02); }
+            100% { text-shadow: 0 0 10px rgba(139, 92, 246, 0.2); transform: scale(1); }
+        }
+        </style>
+    """, unsafe_allow_html=True)
     st.markdown("---")
     
     # --- USER PROFILE SECTION ---
@@ -751,9 +805,8 @@ elif page == "Prediction":
             st.markdown("### 🏆 Prediction Dashboard")
             
             # Mood Badge
-            st.markdown(f"**Detected Content Mood:** `{res['mood']}`")
-            
-            st.markdown(f'<div class="virality-score-big">{res["virality_score"]}<small style="font-size: 2rem;">/100</small></div>', unsafe_allow_html=True)
+            # ⭕ HOLOGRAPHIC SCORE UI
+            render_score_ring(res['virality_score'])
             
             metrics_html = f"""<div class="metric-container">
 {metric_card("Expected Likes", res['likes'])}
