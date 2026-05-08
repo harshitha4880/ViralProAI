@@ -156,42 +156,42 @@ st.markdown("""
         100% { background-position: 0% 50%; }
     }
 
-    /* Glassmorphism Cards with Glow (BALANCED) */
+    /* Glassmorphism Cards with Elite Boundary */
     .glass-card {
-        background: rgba(255, 255, 255, 0.07);
-        backdrop-filter: blur(20px);
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(25px);
         border-radius: 28px;
-        padding: 35px; /* Balanced Padding */
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        margin-bottom: 30px;
-        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.8);
-        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        padding: 40px;
+        border: 2px solid rgba(139, 92, 246, 0.4) !important; /* THE BOUNDARY */
+        margin-bottom: 35px;
+        box-shadow: 0 15px 45px 0 rgba(0, 0, 0, 0.9), 0 0 20px rgba(139, 92, 246, 0.1);
+        transition: all 0.4s ease;
         font-weight: 600 !important;
     }
     
     .glass-card:hover {
-        transform: translateY(-8px) scale(1.01);
-        border: 1px solid rgba(139, 92, 246, 0.5);
-        box-shadow: 0 15px 50px rgba(139, 92, 246, 0.25);
+        transform: translateY(-8px);
+        border: 2px solid rgba(236, 72, 153, 0.6) !important; /* Boundary Shift */
+        box-shadow: 0 20px 60px rgba(139, 92, 246, 0.3);
     }
 
     h1, h2, h3, h4, h5, h6 {
         color: #ffffff !important;
         font-weight: 900 !important;
         letter-spacing: -1.2px;
-        margin-bottom: 20px !important;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.8), 0 0 10px rgba(139, 92, 246, 0.3) !important;
+        margin-bottom: 25px !important;
+        text-shadow: 2px 2px 10px rgba(0,0,0,1);
     }
 
     .stMarkdown p, .stMarkdown li {
-        font-size: 1.12rem !important;
-        line-height: 1.85 !important;
-        letter-spacing: 0.01em;
+        font-size: 1.15rem !important;
+        line-height: 2.2 !important; /* ULTRA-AIRY SPACING */
+        letter-spacing: 0.03em;
         text-align: justify !important;
         text-justify: inter-word !important;
-        color: #f8fafc !important;
-        width: 100% !important; /* Fill the box */
-        margin-bottom: 15px !important;
+        color: #ffffff !important;
+        width: 100% !important;
+        margin-bottom: 20px !important;
     }
 
     /* Metrics High Visibility */
