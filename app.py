@@ -241,11 +241,34 @@ st.markdown("""
         color: white !important;
     }
     
-    .stTextInput label, .stSelectbox label {
+    .stTextInput label, .stSelectbox label, [data-testid="stFileUploader"] label {
         color: #94a3b8 !important;
         font-weight: 800 !important;
         text-transform: uppercase;
         letter-spacing: 1px;
+    }
+
+    /* File Uploader Correction */
+    [data-testid="stFileUploader"] {
+        background-color: #0f172a !important;
+        border-radius: 15px !important;
+        border: 1px dashed rgba(139, 92, 246, 0.4) !important;
+        padding: 10px !important;
+    }
+    
+    [data-testid="stFileUploaderIcon"] {
+        display: none !important;
+    }
+    
+    [data-testid="stFileUploader"] section {
+        background-color: transparent !important;
+    }
+    
+    [data-testid="stFileUploader"] div[role="button"] {
+        background: linear-gradient(90deg, #8b5cf6, #ec4899) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 10px !important;
     }
     
     .metric-container {
