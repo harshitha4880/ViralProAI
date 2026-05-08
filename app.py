@@ -375,43 +375,43 @@ with st.sidebar:
 
     st.markdown("---")
     
-        page = st.selectbox("Navigate", ["Home", "Dataset Insights", "Prediction", "Studio", "Spy", "API"])
-        active_prof = st.selectbox("Switch Account", ["_.harsheeyzzz._ (Personal)", "ViralPro_Biz (Business)", "+ Add Account"])
-        if active_prof == "+ Add Account":
-            st.info("💡 Link a new Instagram account in the 'API Connections' tab.")
+    page = st.selectbox("Navigate", ["Home", "Dataset Insights", "Prediction", "Studio", "Spy", "API"])
+    active_prof = st.selectbox("Switch Account", ["_.harsheeyzzz._ (Personal)", "ViralPro_Biz (Business)", "+ Add Account"])
+    if active_prof == "+ Add Account":
+        st.info("💡 Link a new Instagram account in the 'API Connections' tab.")
+    
+    st.markdown("---")
         
-        st.markdown("---")
+    # --- GLOBAL LUMI CHAT ---
+    st.markdown("### 🐝 Ask Lumi Pro")
+    
+    # Initialize history
+    if 'lumi_history' not in st.session_state:
+        st.session_state['lumi_history'] = []
         
-        # --- GLOBAL LUMI CHAT ---
-        st.markdown("### 🐝 Ask Lumi Pro")
+    chat_container = st.container(height=300)
+    with chat_container:
+        for message in st.session_state['lumi_history']:
+            with st.chat_message(message["role"], avatar="🐝" if message["role"] == "assistant" else "👤"):
+                st.markdown(message["content"])
+    
+    if prompt := st.chat_input("Ask Lumi anything..."):
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(prompt)
+        st.session_state['lumi_history'].append({"role": "user", "content": prompt})
         
-        # Initialize history
-        if 'lumi_history' not in st.session_state:
-            st.session_state['lumi_history'] = []
-            
-        chat_container = st.container(height=300)
-        with chat_container:
-            for message in st.session_state['lumi_history']:
-                with st.chat_message(message["role"], avatar="🐝" if message["role"] == "assistant" else "👤"):
-                    st.markdown(message["content"])
+        # Prepare context
+        ctx = {
+            'score': 85, 'mood': '✨ Creative', 'niche': u_niche if 'u_niche' in locals() else 'General',
+            'rival_data': str(st.session_state.get('watchlist', []))[:200]
+        }
         
-        if prompt := st.chat_input("Ask Lumi anything..."):
-            with st.chat_message("user", avatar="👤"):
-                st.markdown(prompt)
-            st.session_state['lumi_history'].append({"role": "user", "content": prompt})
-            
-            # Prepare context
-            ctx = {
-                'score': 85, 'mood': '✨ Creative', 'niche': u_niche if 'u_niche' in locals() else 'General',
-                'rival_data': str(st.session_state.get('watchlist', []))[:200]
-            }
-            
-            with st.chat_message("assistant", avatar="🐝"):
-                with st.spinner("Lumi is thinking..."):
-                    response = call_lumi_llm(prompt, ctx)
-                    st.markdown(response)
-            st.session_state['lumi_history'].append({"role": "assistant", "content": response})
-            st.rerun()
+        with st.chat_message("assistant", avatar="🐝"):
+            with st.spinner("Lumi is thinking..."):
+                response = call_lumi_llm(prompt, ctx)
+                st.markdown(response)
+        st.session_state['lumi_history'].append({"role": "assistant", "content": response})
+        st.rerun()
 
     st.markdown("---")
     
