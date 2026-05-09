@@ -1607,8 +1607,8 @@ elif page == "API":
                 st.rerun()
         else:
             st.warning("⚠️ **Connection Alert:** Token detected, but no Instagram Business link found.")
+            st.info("💡 **PRO TIP:** If auto-discovery is failing due to Meta rate limits, scroll down to **'Manual Intelligence Override'** below and paste your ID directly to unblock yourself instantly!")
             
-            # --- DEBUG: RAW META FEED ---
             with st.expander("🔍 Debug: Raw Meta Discovery Intel"):
                 st.write("If the lists below are empty `[]`, your account isn't linked to a FB Page.")
                 
